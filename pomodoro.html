@@ -132,12 +132,14 @@ html, body { width:100%;height:100%;overflow:hidden;font-family:var(--font-body)
 .toggle.on::after { left:21px;background:var(--bg-primary); }
 
 /* Stepper */
-.stepper { display:flex;flex-direction:column;align-items:center;gap:2px; }
-.stepper-group { display:flex;align-items:center;gap:2px; }
-.stepper-val { width:38px;text-align:center;font-family:var(--font-display);font-size:18px;font-weight:300;color:var(--text-primary);background:none;border:none;outline:none; }
-.stepper-btn { width:22px;height:22px;border-radius:6px;background:var(--bg-secondary);border:none;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all 0.2s;padding:0;line-height:1; }
-.stepper-btn:hover { background:var(--accent);color:var(--bg-primary); }
-.stepper-btn:active { transform:scale(0.9); }
+.s-inputs { display:flex;align-items:center;gap:4px; }
+.s-val { width:32px;text-align:center;font-family:var(--font-display);font-size:18px;font-weight:300;color:var(--text-primary);background:none;border:1px solid transparent;border-radius:6px;outline:none;padding:2px 0;transition:border-color 0.3s;-moz-appearance:textfield; }
+.s-val::-webkit-outer-spin-button,.s-val::-webkit-inner-spin-button { -webkit-appearance:none;margin:0; }
+.s-val:focus { border-color:var(--accent); }
+.s-arrows { display:flex;flex-direction:column;gap:2px;margin-left:4px; }
+.s-arrow { width:22px;height:18px;border-radius:5px;background:var(--bg-secondary);border:none;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all 0.2s;padding:0;line-height:1; }
+.s-arrow:hover { background:var(--accent);color:var(--bg-primary); }
+.s-arrow:active { transform:scale(0.9); }
 
 .session-flash { position:fixed;inset:0;background:var(--accent);opacity:0;z-index:200;pointer-events:none;transition:opacity 0.15s; }
 .session-flash.active { opacity:0.15; }
@@ -146,7 +148,7 @@ html, body { width:100%;height:100%;overflow:hidden;font-family:var(--font-body)
   .top-bar{padding:10px 14px} .lang-btn{font-size:10px;padding:4px 8px} .theme-dot{width:14px;height:14px}
   .mode-tab{padding:7px 14px;font-size:11px} .start-btn{padding:11px 36px;font-size:12px;letter-spacing:3px}
   :root{--timer-size:min(220px,55vw)} .timer-container{margin-bottom:16px} .mode-tabs{margin-bottom:16px}
-  .stepper-val{font-size:16px;width:32px}
+  .s-val{font-size:16px;width:28px}
 }
 .app { animation:fadeIn 1s ease-out; }
 @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
@@ -164,52 +166,30 @@ html, body { width:100%;height:100%;overflow:hidden;font-family:var(--font-body)
   <div class="panel-title" data-i18n="settings">설정</div>
   <div class="s-group">
     <div class="s-label" data-i18n="timerSettings">타이머</div>
-    <!-- Focus: h + m -->
+    <!-- Focus: h + m + arrows -->
     <div class="s-row">
       <label data-i18n="focus">집중</label>
       <div class="s-inputs">
-        <div class="stepper-group">
-          <button class="stepper-btn" data-target="setFocusH" data-dir="1">▲</button>
-          <span class="stepper-val" id="setFocusH">0</span>
-          <button class="stepper-btn" data-target="setFocusH" data-dir="-1">▼</button>
-        </div>
-        <span class="s-unit">h</span>
-        <div class="stepper-group">
-          <button class="stepper-btn" data-target="setFocusM" data-dir="1">▲</button>
-          <span class="stepper-val" id="setFocusM">25</span>
-          <button class="stepper-btn" data-target="setFocusM" data-dir="-1">▼</button>
-        </div>
-        <span class="s-unit">m</span>
+        <input class="s-val" id="setFocusH" type="number" min="0" max="2" value="0"><span class="s-unit">h</span>
+        <input class="s-val" id="setFocusM" type="number" min="0" max="59" value="25"><span class="s-unit">m</span>
+        <div class="s-arrows"><button class="s-arrow" data-row="focus" data-dir="1">▲</button><button class="s-arrow" data-row="focus" data-dir="-1">▼</button></div>
       </div>
     </div>
-    <!-- Short Break: m only -->
+    <!-- Short Break: m only + arrows (1min step) -->
     <div class="s-row">
       <label data-i18n="shortBreak">짧은 휴식</label>
       <div class="s-inputs">
-        <div class="stepper-group">
-          <button class="stepper-btn" data-target="setShortM" data-dir="1">▲</button>
-          <span class="stepper-val" id="setShortM">5</span>
-          <button class="stepper-btn" data-target="setShortM" data-dir="-1">▼</button>
-        </div>
-        <span class="s-unit">m</span>
+        <input class="s-val" id="setShortM" type="number" min="1" max="30" value="5"><span class="s-unit">m</span>
+        <div class="s-arrows"><button class="s-arrow" data-row="short" data-dir="1">▲</button><button class="s-arrow" data-row="short" data-dir="-1">▼</button></div>
       </div>
     </div>
-    <!-- Long Break: h + m -->
+    <!-- Long Break: h + m + arrows -->
     <div class="s-row">
       <label data-i18n="longBreak">긴 휴식</label>
       <div class="s-inputs">
-        <div class="stepper-group">
-          <button class="stepper-btn" data-target="setLongH" data-dir="1">▲</button>
-          <span class="stepper-val" id="setLongH">0</span>
-          <button class="stepper-btn" data-target="setLongH" data-dir="-1">▼</button>
-        </div>
-        <span class="s-unit">h</span>
-        <div class="stepper-group">
-          <button class="stepper-btn" data-target="setLongM" data-dir="1">▲</button>
-          <span class="stepper-val" id="setLongM">15</span>
-          <button class="stepper-btn" data-target="setLongM" data-dir="-1">▼</button>
-        </div>
-        <span class="s-unit">m</span>
+        <input class="s-val" id="setLongH" type="number" min="0" max="2" value="0"><span class="s-unit">h</span>
+        <input class="s-val" id="setLongM" type="number" min="0" max="59" value="15"><span class="s-unit">m</span>
+        <div class="s-arrows"><button class="s-arrow" data-row="long" data-dir="1">▲</button><button class="s-arrow" data-row="long" data-dir="-1">▼</button></div>
       </div>
     </div>
   </div>
@@ -357,9 +337,9 @@ function go(){
   // Cancel countdown if active
   if(counting){cancelCountdown();return}
   // Resume from pause
-  if(paused){paused=false;running=true;$start.textContent=t('pause');intv=setInterval(tick,1000);return}
+  if(paused){paused=false;running=true;$start.textContent=t('pause');resumeBgSound();intv=setInterval(tick,1000);return}
   // Pause
-  if(running){paused=true;running=false;clearInterval(intv);$start.textContent=t('resume');document.title=`⏸ ${fmt(left)}`;return}
+  if(running){paused=true;running=false;clearInterval(intv);$start.textContent=t('resume');pauseBgSound();document.title=`⏸ ${fmt(left)}`;return}
   // Start fresh → countdown first
   startCountdown(()=>{
     running=true;paused=false;
@@ -425,39 +405,52 @@ function genSound(type){if(!bgCtx)bgCtx=new(window.AudioContext||window.webkitAu
   const s=c.createBufferSource();s.buffer=buf;s.loop=true;s.connect(fl);fl.connect(gn);gn.connect(c.destination);s.start();bgN={s,f:fl,g:gn}}
 
 function notify(m){if('Notification'in window&&Notification.permission==='granted')new Notification('Pomo 🍅',{body:m,silent:true})}
+function pauseBgSound(){if(bgCtx&&bgCtx.state==='running')bgCtx.suspend()}
+function resumeBgSound(){if(bgCtx&&bgCtx.state==='suspended')bgCtx.resume()}
 function reqNotif(){if('Notification'in window&&Notification.permission==='default')Notification.requestPermission()}
 function mkParticles(){const c=document.getElementById('particles');for(let i=0;i<25;i++){const p=document.createElement('div');p.className='particle';p.style.left=Math.random()*100+'%';p.style.top=(80+Math.random()*30)+'%';p.style.width=(1+Math.random()*3)+'px';p.style.height=p.style.width;p.style.animationDuration=(8+Math.random()*16)+'s';p.style.animationDelay=Math.random()*10+'s';c.appendChild(p)}}
 
 // === Settings with steppers ===
 const $ov=document.getElementById('overlay'),$pn=document.getElementById('panel'),$ta=document.getElementById('toggleAuto');
-const stepEls={setFocusH:document.getElementById('setFocusH'),setFocusM:document.getElementById('setFocusM'),setShortM:document.getElementById('setShortM'),setLongH:document.getElementById('setLongH'),setLongM:document.getElementById('setLongM')};
+const $fH=document.getElementById('setFocusH'),$fM=document.getElementById('setFocusM');
+const $sM=document.getElementById('setShortM');
+const $lH=document.getElementById('setLongH'),$lM=document.getElementById('setLongM');
 
-// Stepper limits: {min, max, step}
-const stepCfg={setFocusH:{min:0,max:2,step:1},setFocusM:{min:0,max:55,step:5},setShortM:{min:1,max:30,step:5},setLongH:{min:0,max:2,step:1},setLongM:{min:0,max:55,step:5}};
+// Read total minutes from a row
+function getRowMin(row){
+  if(row==='focus')return(+$fH.value||0)*60+(+$fM.value||0);
+  if(row==='short')return+$sM.value||0;
+  return(+$lH.value||0)*60+(+$lM.value||0);
+}
+// Write total minutes to a row
+function setRowMin(row,m){
+  m=Math.max(1,m);
+  if(row==='focus'){m=Math.min(m,120);$fH.value=Math.floor(m/60);$fM.value=m%60}
+  else if(row==='short'){m=Math.min(m,30);$sM.value=m}
+  else{m=Math.min(m,120);$lH.value=Math.floor(m/60);$lM.value=m%60}
+}
 
-document.querySelectorAll('.stepper-btn').forEach(btn=>{
+// Arrow buttons: focus/long +5min, short +1min
+document.querySelectorAll('.s-arrow').forEach(btn=>{
   btn.addEventListener('click',()=>{
-    const id=btn.dataset.target, dir=+btn.dataset.dir, cfg=stepCfg[id], el=stepEls[id];
-    let v=parseInt(el.textContent)||0;
-    v+=dir*cfg.step;
-    // Clamp
-    if(v>cfg.max)v=cfg.max; if(v<cfg.min)v=cfg.min;
-    // Ensure at least 1 min total for focus/long
-    el.textContent=v;
-    validateMinTotal();
+    const row=btn.dataset.row,dir=+btn.dataset.dir;
+    const step=row==='focus'?5:1;
+    setRowMin(row,getRowMin(row)+dir*step);
   });
 });
 
-function validateMinTotal(){
-  // Focus must be >= 1 min total
-  const fh=+(stepEls.setFocusH.textContent)||0, fm=+(stepEls.setFocusM.textContent)||0;
-  if(fh===0&&fm===0)stepEls.setFocusM.textContent=5;
-  // Short must be >= 1
-  if(+(stepEls.setShortM.textContent)<1)stepEls.setShortM.textContent=1;
-  // Long must be >= 1 min total
-  const lh=+(stepEls.setLongH.textContent)||0, lm=+(stepEls.setLongM.textContent)||0;
-  if(lh===0&&lm===0)stepEls.setLongM.textContent=5;
-}
+// Clamp on manual input blur
+[$fH,$fM,$fH,$lH,$lM,$sM].forEach(el=>el?.addEventListener('change',()=>{
+  // Clamp individual fields
+  $fH.value=Math.max(0,Math.min(2,+$fH.value||0));
+  $fM.value=Math.max(0,Math.min(59,+$fM.value||0));
+  $sM.value=Math.max(1,Math.min(30,+$sM.value||1));
+  $lH.value=Math.max(0,Math.min(2,+$lH.value||0));
+  $lM.value=Math.max(0,Math.min(59,+$lM.value||0));
+  // Ensure min 1 total
+  if(getRowMin('focus')<1)setRowMin('focus',1);
+  if(getRowMin('long')<1)setRowMin('long',1);
+}));
 
 document.getElementById('settingsBtn').addEventListener('click',()=>{$ov.classList.add('open');$pn.classList.add('open')});
 function closePanel(){$ov.classList.remove('open');$pn.classList.remove('open');applySettings()}
@@ -465,10 +458,11 @@ document.getElementById('panelClose').addEventListener('click',closePanel);$ov.a
 $ta.addEventListener('click',()=>{autoOn=!autoOn;$ta.classList.toggle('on',autoOn);localStorage.setItem('pomo-auto',autoOn)});
 
 function applySettings(){
-  validateMinTotal();
-  const fh=+(stepEls.setFocusH.textContent)||0, fm=+(stepEls.setFocusM.textContent)||0;
-  const sm=+(stepEls.setShortM.textContent)||5;
-  const lh=+(stepEls.setLongH.textContent)||0, lm=+(stepEls.setLongM.textContent)||0;
+  // Trigger clamp
+  $fH.dispatchEvent(new Event('change'));
+  const fh=+$fH.value||0, fm=+$fM.value||0;
+  const sm=+$sM.value||5;
+  const lh=+$lH.value||0, lm=+$lM.value||0;
   const focusMin=fh*60+fm, shortMin=sm, longMin=lh*60+lm;
   MODES={focus:focusMin*60,short:shortMin*60,long:longMin*60};
   localStorage.setItem('pomo-modes',JSON.stringify({fh,fm,sm,lh,lm}));
@@ -496,19 +490,17 @@ document.getElementById('soundVol').addEventListener('input',e=>{if(bgN.g)bgN.g.
   const sM=localStorage.getItem('pomo-modes');
   if(sM){
     const m=JSON.parse(sM);
-    // Support both old format {f,s,l} and new {fh,fm,sm,lh,lm}
     if(m.fh!==undefined){
-      stepEls.setFocusH.textContent=m.fh||0;stepEls.setFocusM.textContent=m.fm||0;
-      stepEls.setShortM.textContent=m.sm||5;
-      stepEls.setLongH.textContent=m.lh||0;stepEls.setLongM.textContent=m.lm||0;
+      $fH.value=m.fh||0;$fM.value=m.fm||0;
+      $sM.value=m.sm||5;
+      $lH.value=m.lh||0;$lM.value=m.lm||0;
       MODES={focus:((m.fh||0)*60+(m.fm||0))*60,short:(m.sm||5)*60,long:((m.lh||0)*60+(m.lm||0))*60};
     } else {
-      // Old format: f=totalMin, s=totalMin, l=totalMin
       const fh=Math.floor((m.f||25)/60),fm=(m.f||25)%60;
       const lh=Math.floor((m.l||15)/60),lm=(m.l||15)%60;
-      stepEls.setFocusH.textContent=fh;stepEls.setFocusM.textContent=fm;
-      stepEls.setShortM.textContent=m.s||5;
-      stepEls.setLongH.textContent=lh;stepEls.setLongM.textContent=lm;
+      $fH.value=fh;$fM.value=fm;
+      $sM.value=m.s||5;
+      $lH.value=lh;$lM.value=lm;
       MODES={focus:(m.f||25)*60,short:(m.s||5)*60,long:(m.l||15)*60};
     }
     left=MODES.focus;total=MODES.focus;
