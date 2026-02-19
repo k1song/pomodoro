@@ -75,9 +75,14 @@ html, body { width:100%;height:100%;overflow:hidden;font-family:var(--font-body)
 .timer-time.countdown { animation:countPop 0.4s ease-out; color:var(--accent); }
 @keyframes countPop { 0%{transform:scale(1.4);opacity:0.5} 100%{transform:scale(1);opacity:1} }
 
-.start-btn { background:none;border:1.5px solid var(--text-secondary);color:var(--text-primary);font-family:var(--font-body);font-size:14px;font-weight:400;letter-spacing:4px;text-transform:uppercase;padding:13px 44px;border-radius:50px;cursor:pointer;transition:all 0.4s;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);margin-bottom:18px; }
+.start-btn { background:none;border:1.5px solid var(--text-secondary);color:var(--text-primary);font-family:var(--font-body);font-size:14px;font-weight:400;letter-spacing:4px;text-transform:uppercase;padding:13px 44px;border-radius:50px;cursor:pointer;transition:all 0.4s;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px); }
 .start-btn:hover { border-color:var(--accent);color:var(--accent);box-shadow:0 0 30px var(--accent-glow);transform:translateY(-1px); }
 .start-btn:active { transform:translateY(0) scale(0.98); }
+.btn-row { display:flex;align-items:center;gap:12px;margin-bottom:18px; }
+.stop-btn { background:none;border:1.5px solid transparent;color:var(--text-secondary);font-family:var(--font-body);font-size:12px;font-weight:400;letter-spacing:3px;text-transform:uppercase;padding:13px 22px;border-radius:50px;cursor:pointer;transition:all 0.4s;display:none; }
+.stop-btn.visible { display:block; }
+.stop-btn:hover { border-color:rgba(255,100,100,0.5);color:rgba(255,120,120,0.9);transform:translateY(-1px); }
+.stop-btn:active { transform:translateY(0) scale(0.98); }
 
 .sound-control { display:flex;align-items:center;gap:8px;border-radius:12px;padding:7px 12px;margin-bottom:14px; }
 .sound-icon { width:16px;height:16px;color:var(--text-secondary);flex-shrink:0; }
@@ -145,6 +150,19 @@ html, body { width:100%;height:100%;overflow:hidden;font-family:var(--font-body)
 
 .session-flash { position:fixed;inset:0;background:var(--accent);opacity:0;z-index:200;pointer-events:none;transition:opacity 0.15s; }
 .session-flash.active { opacity:0.15; }
+
+/* Continue modal */
+.continue-modal { position:fixed;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s; }
+.continue-modal.open { opacity:1;pointer-events:all; }
+.continue-box { background:var(--bg-primary);border:1px solid var(--bg-secondary);border-radius:20px;padding:28px 28px 22px;width:min(300px,85vw);display:flex;flex-direction:column;align-items:center;gap:14px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px); }
+.continue-title { font-size:13px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--text-primary);text-align:center; }
+.continue-overtime { font-family:var(--font-display);font-size:clamp(32px,8vw,48px);font-weight:200;color:var(--accent);letter-spacing:3px;text-shadow:0 0 30px var(--accent-glow); }
+.continue-btns { display:flex;gap:10px;width:100%; }
+.continue-btn { flex:1;padding:11px 0;border-radius:12px;border:none;font-family:var(--font-body);font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s; }
+.continue-btn.keep { background:var(--accent);color:var(--bg-primary); }
+.continue-btn.keep:hover { opacity:0.85;transform:translateY(-1px); }
+.continue-btn.stop { background:var(--bg-secondary);color:var(--text-secondary);border:1px solid transparent; }
+.continue-btn.stop:hover { border-color:var(--text-secondary);color:var(--text-primary); }
 
 /* Inline timer editor */
 .timer-edit-wrap { position:absolute;inset:0;display:flex;align-items:center;justify-content:center; }
@@ -217,7 +235,20 @@ html, body { width:100%;height:100%;overflow:hidden;font-family:var(--font-body)
   <div class="s-group">
     <div class="s-label" data-i18n="optionsLabel">옵션</div>
     <div class="s-row"><label data-i18n="autoStart">자동 시작</label><button class="toggle" id="toggleAuto"></button></div>
+    <div class="s-row"><label data-i18n="alarmSound">알람</label><button class="toggle on" id="toggleAlarm"></button></div>
     <div class="s-row"><button class="reset-btn" id="resetDefaultBtn" data-i18n="resetDefault">기본값</button></div>
+  </div>
+</div>
+
+<!-- Continue modal -->
+<div class="continue-modal" id="continueModal">
+  <div class="continue-box glass">
+    <div class="continue-title" id="continueTitle" data-i18n="continueTitle">계속 하시겠습니까?</div>
+    <div class="continue-overtime" id="continueTime">25:00</div>
+    <div class="continue-btns">
+      <button class="continue-btn keep" id="continueKeep" data-i18n="continueKeep">계속하기</button>
+      <button class="continue-btn stop" id="continueStop" data-i18n="continueStop">종료</button>
+    </div>
   </div>
 </div>
 
@@ -260,7 +291,10 @@ html, body { width:100%;height:100%;overflow:hidden;font-family:var(--font-body)
       </div>
     </div>
   </div>
-  <button class="start-btn" id="startBtn" data-i18n="start">시작</button>
+  <div class="btn-row">
+    <button class="start-btn" id="startBtn" data-i18n="start">시작</button>
+    <button class="stop-btn" id="stopBtn" data-i18n="stop">종료</button>
+  </div>
   <div class="sound-control glass">
     <svg class="sound-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V6l7-3v18l-7-3z"/><path d="M9 12H4m0-3v6"/></svg>
     <select class="sound-select" id="soundSelect">
@@ -286,7 +320,7 @@ html, body { width:100%;height:100%;overflow:hidden;font-family:var(--font-body)
 </div>
 
 <script>
-const i18n={ko:{focus:'집중',shortBreak:'짧은 휴식',longBreak:'긴 휴식',start:'시작',pause:'일시정지',resume:'계속',cancel:'취소',ready:'준비',focusing:'집중 중',breaking:'휴식 중',countdown:'곧 시작',soundNone:'무음',soundRain:'빗소리',soundCafe:'카페',soundFire:'모닥불',soundWave:'파도',soundWind:'바람',sessionDone:'세션 완료!',breakDone:'휴식 끝! 다시 집중하세요',tabFocus:'집중 중',tabBreak:'휴식 중',tasks:'할 일',taskPH:'할 일을 입력하세요...',settings:'설정',timerSettings:'기본 타이머',optionsLabel:'옵션',autoStart:'자동 시작',resetDefault:'기본값'},en:{focus:'Focus',shortBreak:'Short Break',longBreak:'Long Break',start:'Start',pause:'Pause',resume:'Resume',cancel:'Cancel',ready:'Ready',focusing:'Focusing',breaking:'On Break',countdown:'Starting',soundNone:'Silent',soundRain:'Rain',soundCafe:'Café',soundFire:'Fire',soundWave:'Waves',soundWind:'Wind',sessionDone:'Session done!',breakDone:'Break over! Time to focus',tabFocus:'Focus',tabBreak:'Break',tasks:'Tasks',taskPH:'Add a task...',settings:'Settings',timerSettings:'Default Timer',optionsLabel:'Options',autoStart:'Auto Start',resetDefault:'Default'},zh:{focus:'专注',shortBreak:'短休息',longBreak:'长休息',start:'开始',pause:'暂停',resume:'继续',cancel:'取消',ready:'准备',focusing:'专注中',breaking:'休息中',countdown:'即将开始',soundNone:'静音',soundRain:'雨声',soundCafe:'咖啡厅',soundFire:'篝火',soundWave:'海浪',soundWind:'风声',sessionDone:'完成！',breakDone:'休息结束！继续专注',tabFocus:'专注',tabBreak:'休息',tasks:'任务',taskPH:'输入任务...',settings:'设置',timerSettings:'默认计时器',optionsLabel:'选项',autoStart:'自动开始',resetDefault:'默认值'}};
+const i18n={ko:{focus:'집중',shortBreak:'짧은 휴식',longBreak:'긴 휴식',start:'시작',pause:'일시정지',resume:'계속',cancel:'취소',stop:'종료',ready:'준비',focusing:'집중 중',breaking:'휴식 중',countdown:'곧 시작',soundNone:'무음',soundRain:'빗소리',soundCafe:'카페',soundFire:'모닥불',soundWave:'파도',soundWind:'바람',sessionDone:'세션 완료!',breakDone:'휴식 끝! 다시 집중하세요',tabFocus:'집중 중',tabBreak:'휴식 중',tasks:'할 일',taskPH:'할 일을 입력하세요...',settings:'설정',timerSettings:'기본 타이머',optionsLabel:'옵션',autoStart:'자동 시작',alarmSound:'알람',resetDefault:'기본값',continueTitle:'계속 하시겠습니까?',continueKeep:'계속하기',continueStop:'종료'},en:{focus:'Focus',shortBreak:'Short Break',longBreak:'Long Break',start:'Start',pause:'Pause',resume:'Resume',cancel:'Cancel',stop:'Stop',ready:'Ready',focusing:'Focusing',breaking:'On Break',countdown:'Starting',soundNone:'Silent',soundRain:'Rain',soundCafe:'Café',soundFire:'Fire',soundWave:'Waves',soundWind:'Wind',sessionDone:'Session done!',breakDone:'Break over! Time to focus',tabFocus:'Focus',tabBreak:'Break',tasks:'Tasks',taskPH:'Add a task...',settings:'Settings',timerSettings:'Default Timer',optionsLabel:'Options',autoStart:'Auto Start',alarmSound:'Alarm',resetDefault:'Default',continueTitle:'Keep going?',continueKeep:'Continue',continueStop:'Stop'},zh:{focus:'专注',shortBreak:'短休息',longBreak:'长休息',start:'开始',pause:'暂停',resume:'继续',cancel:'取消',stop:'结束',ready:'准备',focusing:'专注中',breaking:'休息中',countdown:'即将开始',soundNone:'静音',soundRain:'雨声',soundCafe:'咖啡厅',soundFire:'篝火',soundWave:'海浪',soundWind:'风声',sessionDone:'完成！',breakDone:'休息结束！继续专注',tabFocus:'专注',tabBreak:'休息',tasks:'任务',taskPH:'输入任务...',settings:'设置',timerSettings:'默认计时器',optionsLabel:'选项',autoStart:'自动开始',alarmSound:'闹钟',resetDefault:'默认值',continueTitle:'继续吗？',continueKeep:'继续',continueStop:'结束'}};
 
 let lang='ko';const TITLE='Pomo';
 function t(k){return i18n[lang]?.[k]||k}
@@ -302,10 +336,12 @@ function updateUI(){
 
 let MODES={focus:25*60,short:5*60,long:15*60},mode='focus',left=MODES.focus,total=MODES.focus;
 let DEFAULT_MODES={focus:25*60,short:5*60,long:15*60};
-let running=false,paused=false,counting=false,intv=null,countIntv=null,pCount=0,focusSec=0,autoOn=false,todos=[];
+let running=false,paused=false,counting=false,intv=null,countIntv=null,pCount=0,focusSec=0,autoOn=false,alarmOn=true,todos=[];
+let overTime=false,overSec=0,pendingNextMode=null;
 
 const $time=document.getElementById('timerTime'),$label=document.getElementById('timerLabel');
 const $box=document.getElementById('timerContainer'),$start=document.getElementById('startBtn');
+const $stop=document.getElementById('stopBtn');
 const $ring=document.getElementById('ringProgress'),$dots=document.getElementById('pomoDots');
 const $pCount=document.getElementById('pomoCountText'),$tTime=document.getElementById('totalTimeText');
 const $flash=document.getElementById('sessionFlash');
@@ -320,10 +356,18 @@ function fmt(s){
   return`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
 }
 function updDisp(){
-  $time.textContent=fmt(left);
-  $time.classList.toggle('long-fmt',left>=3600);
-  $ring.style.strokeDashoffset=C*(left/total);
-  if(running&&!paused)document.title=`${fmt(left)} — ${mode==='focus'?t('tabFocus'):t('tabBreak')}`;
+  if(overTime){
+    $time.textContent=fmt(overSec);
+    $time.classList.toggle('long-fmt',overSec>=3600);
+    document.getElementById('continueTime').textContent=fmt(overSec);
+    $ring.style.strokeDashoffset=0;
+    if(running)document.title=`+${fmt(overSec)} — ${mode==='focus'?t('tabFocus'):t('tabBreak')}`;
+  } else {
+    $time.textContent=fmt(left);
+    $time.classList.toggle('long-fmt',left>=3600);
+    $ring.style.strokeDashoffset=C*(left/total);
+    if(running&&!paused)document.title=`${fmt(left)} — ${mode==='focus'?t('tabFocus'):t('tabBreak')}`;
+  }
 }
 function updLabel(){$label.textContent=mode==='focus'?t('focusing'):t('breaking')}
 function updStats(){$pCount.textContent=pCount;const h=Math.floor(focusSec/3600),m=Math.floor((focusSec%3600)/60);$tTime.textContent=`${h}h ${m}m`}
@@ -332,6 +376,19 @@ function updDots(){
   ds.forEach((d,i)=>d.classList.toggle('filled',i<(c===0&&pCount>0?5:c)));
   if(c===0&&pCount>0)setTimeout(()=>ds.forEach(d=>d.classList.remove('filled')),2000);
 }
+function updStopBtn(){
+  $stop.classList.toggle('visible',(running||paused||overTime)&&!counting);
+}
+$stop.addEventListener('click',()=>{
+  clearInterval(intv);intv=null;
+  running=false;paused=false;overTime=false;overSec=0;pendingNextMode=null;
+  if(counting){cancelCountdown();return;}
+  hideContinueModal();
+  $box.classList.remove('running','on-break');
+  $start.textContent=t('start');$label.textContent=t('ready');document.title=TITLE;
+  updStopBtn();
+  setMode(mode);
+});
 
 // === 5-second countdown ===
 function startCountdown(cb){
@@ -365,44 +422,91 @@ function cancelCountdown(){
   $start.textContent=t('start');
   $label.textContent=t('ready');
   document.title=TITLE;
+  updStopBtn();
   buildEditUI();
 }
 
 function go(){
-  // Cancel countdown if active
   if(counting){cancelCountdown();return}
-  // Resume from pause
-  if(paused){paused=false;running=true;$start.textContent=t('pause');resumeBgSound();intv=setInterval(tick,1000);return}
-  // Pause
-  if(running){paused=true;running=false;clearInterval(intv);$start.textContent=t('resume');pauseBgSound();document.title=`⏸ ${fmt(left)}`;return}
-  // Start fresh → hide edit, show display, countdown
+  if(paused){paused=false;running=true;$start.textContent=t('pause');resumeBgSound();intv=setInterval(tick,1000);updStopBtn();return}
+  if(running){
+    paused=true;running=false;clearInterval(intv);
+    $start.textContent=t('resume');pauseBgSound();
+    document.title=overTime?`⏸ +${fmt(overSec)}`:`⏸ ${fmt(left)}`;
+    updStopBtn();return;
+  }
   showRunningDisplay();
   startCountdown(()=>{
     running=true;paused=false;
     $start.textContent=t('pause');
     $box.classList.add('running');
     if(mode!=='focus')$box.classList.add('on-break');
-    updLabel();updDisp();
+    updLabel();updDisp();updStopBtn();
     intv=setInterval(tick,1000);
   });
 }
 
 function tick(){
-  left--;if(mode==='focus')focusSec++;updDisp();updStats();
-  if(left<=0){clearInterval(intv);running=false;paused=false;$box.classList.remove('running','on-break');
-    $flash.classList.add('active');setTimeout(()=>$flash.classList.remove('active'),400);alarm();
-    if(mode==='focus'){pCount++;updDots();saveDay();notify(t('sessionDone'));setMode(pCount%5===0?'long':'short')}
-    else{notify(t('breakDone'));setMode('focus')}
-    $start.textContent=t('start');$label.textContent=t('ready');document.title=TITLE;
-    buildEditUI();
-    if(autoOn)setTimeout(go,1500);
+  if(overTime){
+    overSec++;
+    if(mode==='focus')focusSec++;
+    updDisp();updStats();
+    return;
+  }
+  left--;
+  if(mode==='focus')focusSec++;
+  updDisp();updStats();
+  if(left<=0){
+    // Session ended
+    $flash.classList.add('active');setTimeout(()=>$flash.classList.remove('active'),400);
+    if(alarmOn)alarm();
+    if(mode==='focus'){pCount++;updDots();saveDay();if(alarmOn)notify(t('sessionDone'));pendingNextMode=pCount%5===0?'long':'short';}
+    else{if(alarmOn)notify(t('breakDone'));pendingNextMode='focus';}
+    // Start overtime countdown + show modal
+    overTime=true;overSec=0;
+    $box.classList.add('running');
+    if(mode!=='focus')$box.classList.add('on-break');
+    showContinueModal();
   }
 }
-function setMode(m){mode=m;left=MODES[m];total=MODES[m];clearInterval(intv);running=false;paused=false;
+
+function showContinueModal(){
+  const modal=document.getElementById('continueModal');
+  document.getElementById('continueTime').textContent=fmt(0);
+  modal.classList.add('open');
+}
+function hideContinueModal(){
+  document.getElementById('continueModal').classList.remove('open');
+}
+
+function finishSession(){
+  clearInterval(intv);intv=null;
+  running=false;paused=false;overTime=false;overSec=0;
+  $box.classList.remove('running','on-break');
+  hideContinueModal();
+  $start.textContent=t('start');$label.textContent=t('ready');document.title=TITLE;
+  const next=pendingNextMode||'focus';pendingNextMode=null;
+  setMode(next);
+  updStopBtn();
+  if(autoOn)setTimeout(go,1500);
+}
+
+document.getElementById('continueKeep').addEventListener('click',()=>{
+  hideContinueModal();
+  // Keep ticking in overtime — intv already running
+});
+document.getElementById('continueStop').addEventListener('click',()=>{
+  finishSession();
+});
+function setMode(m){
+  mode=m;left=MODES[m];total=MODES[m];
+  overTime=false;overSec=0;pendingNextMode=null;
+  clearInterval(intv);intv=null;running=false;paused=false;
   if(counting)cancelCountdown();
   $box.classList.remove('running','on-break');updDisp();
-  document.querySelectorAll('.mode-tab').forEach(t=>t.classList.toggle('active',t.dataset.mode===m));
+  document.querySelectorAll('.mode-tab').forEach(tb=>tb.classList.toggle('active',tb.dataset.mode===m));
   $start.textContent=t('start');$label.textContent=t('ready');document.title=TITLE;
+  updStopBtn();
   buildEditUI();
 }
 
@@ -509,6 +613,8 @@ document.getElementById('settingsBtn').addEventListener('click',()=>{
 function closePanel(){$ov.classList.remove('open');$pn.classList.remove('open');applyPanelDefaults()}
 document.getElementById('panelClose').addEventListener('click',closePanel);$ov.addEventListener('click',closePanel);
 $ta.addEventListener('click',()=>{autoOn=!autoOn;$ta.classList.toggle('on',autoOn);localStorage.setItem('pomo-auto',autoOn)});
+const $tAlarm=document.getElementById('toggleAlarm');
+$tAlarm.addEventListener('click',()=>{alarmOn=!alarmOn;$tAlarm.classList.toggle('on',alarmOn);localStorage.setItem('pomo-alarm',alarmOn)});
 document.getElementById('resetDefaultBtn').addEventListener('click',()=>{
   setRowMin('focus',25);setRowMin('short',5);setRowMin('long',15);
 });
@@ -622,6 +728,9 @@ document.getElementById('soundVol').addEventListener('input',e=>{if(bgN.g)bgN.g.
   MODES={focus:DEFAULT_MODES.focus,short:DEFAULT_MODES.short,long:DEFAULT_MODES.long};
   left=MODES.focus;total=MODES.focus;
   autoOn=localStorage.getItem('pomo-auto')==='true';$ta.classList.toggle('on',autoOn);
+  const sAlarm=localStorage.getItem('pomo-alarm');
+  if(sAlarm!==null){alarmOn=sAlarm==='true';}
+  $tAlarm.classList.toggle('on',alarmOn);
   loadDay();loadTodos();mkParticles();updDisp();updateUI();
   buildEditUI();
 })();
