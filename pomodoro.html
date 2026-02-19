@@ -130,6 +130,8 @@ html, body { width:100%;height:100%;overflow:hidden;font-family:var(--font-body)
 .toggle::after { content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--text-secondary);transition:all 0.3s; }
 .toggle.on { background:var(--accent); }
 .toggle.on::after { left:21px;background:var(--bg-primary); }
+.reset-btn { background:none;border:1px solid var(--text-secondary);color:var(--text-secondary);font-family:var(--font-body);font-size:11px;letter-spacing:2px;padding:5px 14px;border-radius:8px;cursor:pointer;transition:all 0.3s; }
+.reset-btn:hover { border-color:var(--accent);color:var(--accent); }
 
 /* Stepper */
 .s-inputs { display:flex;align-items:center;gap:4px; }
@@ -143,6 +145,28 @@ html, body { width:100%;height:100%;overflow:hidden;font-family:var(--font-body)
 
 .session-flash { position:fixed;inset:0;background:var(--accent);opacity:0;z-index:200;pointer-events:none;transition:opacity 0.15s; }
 .session-flash.active { opacity:0.15; }
+
+/* Inline timer editor */
+.timer-edit-wrap { position:absolute;inset:0;display:flex;align-items:center;justify-content:center; }
+.timer-edit-inner { display:flex;align-items:center;gap:2px; }
+.timer-edit-col { display:flex;flex-direction:column;align-items:center;gap:3px; }
+.timer-edit-col .t-unit-label { order:3; }
+.timer-edit-col .t-arrow:last-child { order:4; }
+.t-arrow { width:28px;height:22px;border-radius:6px;background:var(--bg-secondary);border:none;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all 0.2s;padding:0;line-height:1; }
+.t-arrow:hover { background:var(--accent);color:var(--bg-primary); }
+.t-arrow:active { transform:scale(0.9); }
+.t-val { text-align:center;font-family:var(--font-display);font-size:clamp(36px,9vw,54px);font-weight:200;letter-spacing:1px;color:var(--text-primary);background:none;border:none;border-bottom:1.5px solid transparent;outline:none;padding:0;transition:border-color 0.3s;-moz-appearance:textfield; }
+.t-val::-webkit-outer-spin-button,.t-val::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.t-val:focus { border-bottom-color:var(--accent); }
+.t-val.w1 { width:clamp(30px,7vw,44px); }
+.t-val.w2 { width:clamp(52px,13vw,76px); }
+.t-colon { font-family:var(--font-display);font-size:clamp(38px,9vw,56px);font-weight:200;color:var(--text-primary);line-height:1;padding:0 2px;margin-bottom:18px; }
+.t-unit-label { font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-top:1px;opacity:0.6; }
+.timer-edit-hint { font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-top:2px;opacity:0.7; }
+/* hide edit when running/paused/counting */
+.timer-container.running .timer-edit-wrap,
+.timer-container.on-break .timer-edit-wrap { display:none; }
+.timer-edit-wrap.hidden { display:none; }
 
 @media (max-width:480px) {
   .top-bar{padding:10px 14px} .lang-btn{font-size:10px;padding:4px 8px} .theme-dot{width:14px;height:14px}
@@ -165,8 +189,7 @@ html, body { width:100%;height:100%;overflow:hidden;font-family:var(--font-body)
   <button class="panel-close" id="panelClose">×</button>
   <div class="panel-title" data-i18n="settings">설정</div>
   <div class="s-group">
-    <div class="s-label" data-i18n="timerSettings">타이머</div>
-    <!-- Focus: h + m + arrows -->
+    <div class="s-label" data-i18n="timerSettings">기본 타이머</div>
     <div class="s-row">
       <label data-i18n="focus">집중</label>
       <div class="s-inputs">
@@ -175,7 +198,6 @@ html, body { width:100%;height:100%;overflow:hidden;font-family:var(--font-body)
         <div class="s-arrows"><button class="s-arrow" data-row="focus" data-dir="1">▲</button><button class="s-arrow" data-row="focus" data-dir="-1">▼</button></div>
       </div>
     </div>
-    <!-- Short Break: m only + arrows (1min step) -->
     <div class="s-row">
       <label data-i18n="shortBreak">짧은 휴식</label>
       <div class="s-inputs">
@@ -183,7 +205,6 @@ html, body { width:100%;height:100%;overflow:hidden;font-family:var(--font-body)
         <div class="s-arrows"><button class="s-arrow" data-row="short" data-dir="1">▲</button><button class="s-arrow" data-row="short" data-dir="-1">▼</button></div>
       </div>
     </div>
-    <!-- Long Break: h + m + arrows -->
     <div class="s-row">
       <label data-i18n="longBreak">긴 휴식</label>
       <div class="s-inputs">
@@ -196,6 +217,7 @@ html, body { width:100%;height:100%;overflow:hidden;font-family:var(--font-body)
   <div class="s-group">
     <div class="s-label" data-i18n="optionsLabel">옵션</div>
     <div class="s-row"><label data-i18n="autoStart">자동 시작</label><button class="toggle" id="toggleAuto"></button></div>
+    <div class="s-row"><label data-i18n="resetDefault">기본값</label><button class="reset-btn" id="resetDefaultBtn">Default</button></div>
   </div>
 </div>
 
@@ -226,7 +248,17 @@ html, body { width:100%;height:100%;overflow:hidden;font-family:var(--font-body)
   </div>
   <div class="timer-container" id="timerContainer">
     <div class="timer-ring"><svg viewBox="0 0 320 320"><circle class="timer-ring-bg" cx="160" cy="160" r="150"/><circle class="timer-ring-progress" id="ringProgress" cx="160" cy="160" r="150" stroke-dasharray="942.48" stroke-dashoffset="0"/></svg></div>
-    <div class="timer-display"><div class="timer-time" id="timerTime">25:00</div><div class="timer-label" id="timerLabel" data-i18n="ready">준비</div></div>
+    <!-- Running display -->
+    <div class="timer-display" id="timerDisplay"><div class="timer-time" id="timerTime">25:00</div><div class="timer-label" id="timerLabel" data-i18n="ready">준비</div></div>
+    <!-- Inline edit (shown before start) -->
+    <div class="timer-edit-wrap" id="timerEditWrap">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+        <div class="timer-edit-inner" id="timerEditInner">
+          <!-- columns injected by JS -->
+        </div>
+        <div class="timer-edit-hint" id="timerEditHint">tap to edit</div>
+      </div>
+    </div>
   </div>
   <button class="start-btn" id="startBtn" data-i18n="start">시작</button>
   <div class="sound-control glass">
@@ -269,6 +301,7 @@ function updateUI(){
 }
 
 let MODES={focus:25*60,short:5*60,long:15*60},mode='focus',left=MODES.focus,total=MODES.focus;
+let DEFAULT_MODES={focus:25*60,short:5*60,long:15*60};
 let running=false,paused=false,counting=false,intv=null,countIntv=null,pCount=0,focusSec=0,autoOn=false,todos=[];
 
 const $time=document.getElementById('timerTime'),$label=document.getElementById('timerLabel');
@@ -306,6 +339,8 @@ function startCountdown(cb){
   $start.textContent=t('cancel');
   $label.textContent=t('countdown');
   $box.classList.add('running');
+  editWrap.classList.add('hidden');
+  timerDisplay.style.display='';
   function show(){
     $time.textContent=sec;
     $time.classList.remove('countdown');
@@ -316,7 +351,6 @@ function startCountdown(cb){
   countIntv=setInterval(()=>{
     sec--;
     if(sec>0){show();return}
-    // sec === 0: show "시작" text briefly then begin
     clearInterval(countIntv);countIntv=null;counting=false;
     $time.classList.remove('countdown');
     cb();
@@ -331,6 +365,7 @@ function cancelCountdown(){
   $start.textContent=t('start');
   $label.textContent=t('ready');
   document.title=TITLE;
+  buildEditUI();
 }
 
 function go(){
@@ -340,7 +375,8 @@ function go(){
   if(paused){paused=false;running=true;$start.textContent=t('pause');resumeBgSound();intv=setInterval(tick,1000);return}
   // Pause
   if(running){paused=true;running=false;clearInterval(intv);$start.textContent=t('resume');pauseBgSound();document.title=`⏸ ${fmt(left)}`;return}
-  // Start fresh → countdown first
+  // Start fresh → hide edit, show display, countdown
+  showRunningDisplay();
   startCountdown(()=>{
     running=true;paused=false;
     $start.textContent=t('pause');
@@ -358,6 +394,7 @@ function tick(){
     if(mode==='focus'){pCount++;updDots();saveDay();notify(t('sessionDone'));setMode(pCount%5===0?'long':'short')}
     else{notify(t('breakDone'));setMode('focus')}
     $start.textContent=t('start');$label.textContent=t('ready');document.title=TITLE;
+    buildEditUI();
     if(autoOn)setTimeout(go,1500);
   }
 }
@@ -366,6 +403,7 @@ function setMode(m){mode=m;left=MODES[m];total=MODES[m];clearInterval(intv);runn
   $box.classList.remove('running','on-break');updDisp();
   document.querySelectorAll('.mode-tab').forEach(t=>t.classList.toggle('active',t.dataset.mode===m));
   $start.textContent=t('start');$label.textContent=t('ready');document.title=TITLE;
+  buildEditUI();
 }
 
 // Daily persistence
@@ -410,63 +448,148 @@ function resumeBgSound(){if(bgCtx&&bgCtx.state==='suspended')bgCtx.resume()}
 function reqNotif(){if('Notification'in window&&Notification.permission==='default')Notification.requestPermission()}
 function mkParticles(){const c=document.getElementById('particles');for(let i=0;i<25;i++){const p=document.createElement('div');p.className='particle';p.style.left=Math.random()*100+'%';p.style.top=(80+Math.random()*30)+'%';p.style.width=(1+Math.random()*3)+'px';p.style.height=p.style.width;p.style.animationDuration=(8+Math.random()*16)+'s';p.style.animationDelay=Math.random()*10+'s';c.appendChild(p)}}
 
-// === Settings with steppers ===
+// === Settings panel ===
 const $ov=document.getElementById('overlay'),$pn=document.getElementById('panel'),$ta=document.getElementById('toggleAuto');
 const $fH=document.getElementById('setFocusH'),$fM=document.getElementById('setFocusM');
 const $sM=document.getElementById('setShortM');
 const $lH=document.getElementById('setLongH'),$lM=document.getElementById('setLongM');
 
-// Read total minutes from a row
 function getRowMin(row){
   if(row==='focus')return(+$fH.value||0)*60+(+$fM.value||0);
   if(row==='short')return+$sM.value||0;
   return(+$lH.value||0)*60+(+$lM.value||0);
 }
-// Write total minutes to a row
 function setRowMin(row,m){
   m=Math.max(1,m);
   if(row==='focus'){m=Math.min(m,120);$fH.value=Math.floor(m/60);$fM.value=m%60}
   else if(row==='short'){m=Math.min(m,30);$sM.value=m}
   else{m=Math.min(m,120);$lH.value=Math.floor(m/60);$lM.value=m%60}
 }
-
-// Arrow buttons: focus/long +5min, short +1min
 document.querySelectorAll('.s-arrow').forEach(btn=>{
   btn.addEventListener('click',()=>{
     const row=btn.dataset.row,dir=+btn.dataset.dir;
-    const step=row==='focus'?5:1;
-    setRowMin(row,getRowMin(row)+dir*step);
+    setRowMin(row,getRowMin(row)+dir);
   });
 });
-
-// Clamp on manual input blur
-[$fH,$fM,$fH,$lH,$lM,$sM].forEach(el=>el?.addEventListener('change',()=>{
-  // Clamp individual fields
+[$fH,$fM,$sM,$lH,$lM].forEach(el=>el?.addEventListener('change',()=>{
   $fH.value=Math.max(0,Math.min(2,+$fH.value||0));
   $fM.value=Math.max(0,Math.min(59,+$fM.value||0));
   $sM.value=Math.max(1,Math.min(30,+$sM.value||1));
   $lH.value=Math.max(0,Math.min(2,+$lH.value||0));
   $lM.value=Math.max(0,Math.min(59,+$lM.value||0));
-  // Ensure min 1 total
   if(getRowMin('focus')<1)setRowMin('focus',1);
   if(getRowMin('long')<1)setRowMin('long',1);
 }));
 
-document.getElementById('settingsBtn').addEventListener('click',()=>{$ov.classList.add('open');$pn.classList.add('open')});
-function closePanel(){$ov.classList.remove('open');$pn.classList.remove('open');applySettings()}
+function applyPanelDefaults(){
+  const focusMin=getRowMin('focus')||25;
+  const shortMin=getRowMin('short')||5;
+  const longMin=getRowMin('long')||15;
+  // Default values saved
+  DEFAULT_MODES={focus:focusMin*60,short:shortMin*60,long:longMin*60};
+  localStorage.setItem('pomo-defaults',JSON.stringify({fh:Math.floor(focusMin/60),fm:focusMin%60,sm:shortMin,lh:Math.floor(longMin/60),lm:longMin%60}));
+  // Apply to current mode only if not running and matches old default
+  if(!running&&!paused&&!counting){
+    MODES.focus=DEFAULT_MODES.focus;
+    MODES.short=DEFAULT_MODES.short;
+    MODES.long=DEFAULT_MODES.long;
+    left=MODES[mode];total=MODES[mode];
+    updDisp();buildEditUI();
+  }
+}
+
+document.getElementById('settingsBtn').addEventListener('click',()=>{
+  // Sync panel inputs from current defaults
+  const f=Math.round(DEFAULT_MODES.focus/60),s=Math.round(DEFAULT_MODES.short/60),l=Math.round(DEFAULT_MODES.long/60);
+  $fH.value=Math.floor(f/60);$fM.value=f%60;
+  $sM.value=s;
+  $lH.value=Math.floor(l/60);$lM.value=l%60;
+  $ov.classList.add('open');$pn.classList.add('open');
+});
+function closePanel(){$ov.classList.remove('open');$pn.classList.remove('open');applyPanelDefaults()}
 document.getElementById('panelClose').addEventListener('click',closePanel);$ov.addEventListener('click',closePanel);
 $ta.addEventListener('click',()=>{autoOn=!autoOn;$ta.classList.toggle('on',autoOn);localStorage.setItem('pomo-auto',autoOn)});
+document.getElementById('resetDefaultBtn').addEventListener('click',()=>{
+  setRowMin('focus',25);setRowMin('short',5);setRowMin('long',15);
+});
 
-function applySettings(){
-  // Trigger clamp
-  $fH.dispatchEvent(new Event('change'));
-  const fh=+$fH.value||0, fm=+$fM.value||0;
-  const sm=+$sM.value||5;
-  const lh=+$lH.value||0, lm=+$lM.value||0;
-  const focusMin=fh*60+fm, shortMin=sm, longMin=lh*60+lm;
-  MODES={focus:focusMin*60,short:shortMin*60,long:longMin*60};
-  localStorage.setItem('pomo-modes',JSON.stringify({fh,fm,sm,lh,lm}));
-  if(!running&&!paused&&!counting){left=MODES[mode];total=MODES[mode];updDisp()}
+// === Inline timer editor ===
+const editWrap=document.getElementById('timerEditWrap');
+const editInner=document.getElementById('timerEditInner');
+const timerDisplay=document.getElementById('timerDisplay');
+const editHint=document.getElementById('timerEditHint');
+
+// Build the inline edit UI for current mode
+function buildEditUI(){
+  editInner.innerHTML='';
+  const totalMin=Math.round(MODES[mode]/60);
+
+  function makeCol(id,max,val,unitLabel,digits){
+    const col=document.createElement('div');col.className='timer-edit-col';
+    const up=document.createElement('button');up.className='t-arrow';up.innerHTML='▲';up.tabIndex=-1;
+    const inp=document.createElement('input');inp.type='number';inp.className='t-val '+(digits===1?'w1':'w2');inp.id=id;
+    inp.value=digits===1?String(val):String(val).padStart(2,'0');
+    inp.min=0;inp.max=max;
+    const dn=document.createElement('button');dn.className='t-arrow';dn.innerHTML='▼';dn.tabIndex=-1;
+    const lbl=document.createElement('div');lbl.className='t-unit-label';lbl.textContent=unitLabel;
+    up.addEventListener('click',()=>{inp.value=digits===1?String(Math.max(0,Math.min(max,(parseInt(inp.value)||0)+1))):String(Math.max(0,Math.min(max,(parseInt(inp.value)||0)+1))).padStart(2,'0');syncFromEdit()});
+    dn.addEventListener('click',()=>{inp.value=digits===1?String(Math.max(0,Math.min(max,(parseInt(inp.value)||0)-1))):String(Math.max(0,Math.min(max,(parseInt(inp.value)||0)-1))).padStart(2,'0');syncFromEdit()});
+    inp.addEventListener('input',syncFromEdit);
+    inp.addEventListener('focus',()=>inp.select());
+    col.append(up,inp,lbl,dn);return col;
+  }
+  function colon(){const s=document.createElement('span');s.className='t-colon';s.textContent=':';return s;}
+
+  if(mode==='focus'||mode==='long'){
+    const hVal=Math.floor(totalMin/60),mVal=totalMin%60;
+    const colH=makeCol('eH',2,hVal,'hr',1);
+    const colM=makeCol('eM',59,mVal,'min',2);
+    editInner.append(colH,colon(),colM);
+    // Tab from hour → min
+    colH.querySelector('input').addEventListener('keydown',e=>{
+      if(e.key==='Tab'){e.preventDefault();colM.querySelector('input').focus();}
+    });
+    colM.querySelector('input').addEventListener('keydown',e=>{
+      if(e.key==='Tab'){e.preventDefault();colH.querySelector('input').focus();}
+    });
+  } else {
+    // short break: minutes only
+    editInner.append(makeCol('eM',30,totalMin,'min',2));
+  }
+
+  // hide running display, show edit
+  timerDisplay.style.display='none';
+  editWrap.classList.remove('hidden');
+}
+
+function syncFromEdit(){
+  const eH=document.getElementById('eH'),eM=document.getElementById('eM');
+  let totalMin=0;
+  if(mode==='focus'||mode==='long'){
+    const h=Math.max(0,Math.min(2,+eH?.value||0));
+    const m=Math.max(0,Math.min(59,+eM?.value||0));
+    totalMin=h*60+m;
+  } else {
+    totalMin=Math.max(1,Math.min(30,+eM?.value||1));
+  }
+  if(totalMin<1)totalMin=1;
+  MODES[mode]=totalMin*60;
+  left=MODES[mode];total=MODES[mode];
+  // update ring
+  $ring.style.strokeDashoffset=C*(left/total);
+  // save
+  saveModes();
+}
+
+function showRunningDisplay(){
+  timerDisplay.style.display='';
+  editWrap.classList.add('hidden');
+}
+
+function saveModes(){
+  const m=Math.round(MODES.focus/60),s=Math.round(MODES.short/60),l=Math.round(MODES.long/60);
+  const fh=Math.floor(m/60),fm=m%60,lh=Math.floor(l/60),lm=l%60;
+  localStorage.setItem('pomo-modes',JSON.stringify({fh,fm,sm:s,lh,lm}));
 }
 
 // Events
@@ -487,26 +610,21 @@ document.getElementById('soundVol').addEventListener('input',e=>{if(bgN.g)bgN.g.
   if(sT){document.body.setAttribute('data-theme',sT);document.querySelectorAll('.theme-dot').forEach(d=>d.classList.toggle('active',d.dataset.t===sT))}
   const sV=localStorage.getItem('pomo-vol');if(sV)document.getElementById('soundVol').value=sV;
   const sS=localStorage.getItem('pomo-sound');if(sS)document.getElementById('soundSelect').value=sS;
-  const sM=localStorage.getItem('pomo-modes');
-  if(sM){
-    const m=JSON.parse(sM);
-    if(m.fh!==undefined){
-      $fH.value=m.fh||0;$fM.value=m.fm||0;
-      $sM.value=m.sm||5;
-      $lH.value=m.lh||0;$lM.value=m.lm||0;
-      MODES={focus:((m.fh||0)*60+(m.fm||0))*60,short:(m.sm||5)*60,long:((m.lh||0)*60+(m.lm||0))*60};
-    } else {
-      const fh=Math.floor((m.f||25)/60),fm=(m.f||25)%60;
-      const lh=Math.floor((m.l||15)/60),lm=(m.l||15)%60;
-      $fH.value=fh;$fM.value=fm;
-      $sM.value=m.s||5;
-      $lH.value=lh;$lM.value=lm;
-      MODES={focus:(m.f||25)*60,short:(m.s||5)*60,long:(m.l||15)*60};
-    }
-    left=MODES.focus;total=MODES.focus;
+  // Load defaults
+  const sD=localStorage.getItem('pomo-defaults');
+  if(sD){
+    const d=JSON.parse(sD);
+    const focusMin=(d.fh||0)*60+(d.fm||0)||25;
+    const shortMin=d.sm||5;
+    const longMin=(d.lh||0)*60+(d.lm||0)||15;
+    DEFAULT_MODES={focus:focusMin*60,short:shortMin*60,long:longMin*60};
   }
+  MODES={focus:DEFAULT_MODES.focus,short:DEFAULT_MODES.short,long:DEFAULT_MODES.long};
+  left=MODES.focus;total=MODES.focus;
   autoOn=localStorage.getItem('pomo-auto')==='true';$ta.classList.toggle('on',autoOn);
-  loadDay();loadTodos();mkParticles();updDisp();updateUI()})();
+  loadDay();loadTodos();mkParticles();updDisp();updateUI();
+  buildEditUI();
+})();
 </script>
 </body>
 </html>
