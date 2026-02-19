@@ -4,9 +4,14 @@
 
 ## Features
 
-- ⏱ 포모도로 타이머 (25분 집중 / 5분 휴식 / 15분 긴 휴식)
-- 🎨 3가지 감성 테마 (Lofi Night · Sunset · Forest)
-- 🔊 배경 사운드 (빗소리 · 카페)
+- ⏱ 포모도로 타이머 (집중 / 짧은 휴식 / 긴 휴식)
+- 🎯 탭에서 직접 시간 설정 (타이머 링 안에서 바로 편집, ▲▼ 버튼 + 직접 입력)
+- ⚙️ 기본 타이머 설정 (설정에서 각 모드 기본값 변경 및 초기화)
+- 🔁 자동 시작 옵션 (세션 종료 후 자동으로 다음 세션 시작)
+- ✅ 할 일 목록 (최대 5개, 새로고침 후에도 유지)
+- 📊 오늘의 통계 (완료 세션 수 · 총 집중 시간)
+- 🎨 4가지 감성 테마 (Lofi Night · Sunset · Forest · Black)
+- 🔊 배경 사운드 (빗소리 · 카페 · 모닥불 · 파도 · 바람)
 - 🌐 3개 국어 지원 (한국어 · English · 中文)
 - 📱 반응형 디자인 (모바일 지원)
 - ⌨️ 스페이스바 단축키
@@ -27,12 +32,13 @@ npx serve .
 
 ## Deploy
 
-Vercel, Netlify, GitHub Pages 등에 바로 배포 가능합니다.
+Vercel, Netlify, GitHub Pages, Cloudflare Pages 등에 바로 배포 가능합니다.
 
 ## Tech Stack
 
 - Vanilla HTML / CSS / JS (프레임워크 없음)
 - Web Audio API (알림 사운드 + 배경 사운드 생성)
+- Web Notifications API
 - Google Fonts (Outfit, Noto Sans KR/SC)
 
 ## License
