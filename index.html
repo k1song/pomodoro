@@ -112,27 +112,39 @@ body.hide-ui .daily-stats {opacity:0 !important;pointer-events:none !important;}
 .todo-section {width:min(420px,90vw);}
 .todo-header {display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
 .todo-title {font-size:calc(11px * var(--fs));font-weight:400;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);}
-.todo-add-btn {background:none;border:none;color:var(--text-secondary);font-size:calc(18px * var(--fs));cursor:pointer;padding:0 4px;transition:color 0.3s;line-height:1;}
-.todo-add-btn:hover {color:var(--accent);}
+.todo-input-row {display:flex;gap:8px;align-items:center;flex-shrink:0;}
+.todo-input {flex:1;background:var(--bg-secondary);border:1px solid transparent;color:var(--text-primary);font-family:var(--font-body);font-size:13px;padding:10px 14px;border-radius:10px;outline:none;transition:border 0.2s;}
+.todo-input:focus {border-color:var(--accent);}
+.todo-input::placeholder {color:var(--text-secondary);}
+.todo-add-btn {background:var(--accent);color:var(--bg-primary);border:none;font-family:var(--font-body);font-size:11px;font-weight:600;letter-spacing:1.5px;padding:10px 16px;border-radius:10px;cursor:pointer;transition:opacity 0.2s;white-space:nowrap;}
+.todo-add-btn:hover {opacity:0.85;}
 .todo-list {display:flex;flex-direction:column;gap:4px;max-height:340px;overflow-y:scroll;}
 .todo-list::-webkit-scrollbar {width:4px;}
 .todo-list::-webkit-scrollbar-track {background:transparent;}
 .todo-list::-webkit-scrollbar-thumb {background:var(--text-secondary);border-radius:2px;}
 .todo-list::-webkit-scrollbar-thumb:hover {background:var(--accent);}
-.todo-item {display:flex;align-items:center;gap:10px;border-radius:10px;padding:9px 12px;transition:all 0.2s;animation:slideIn 0.3s ease;}
+.todo-item {display:flex;align-items:center;gap:10px;border-radius:10px;padding:9px 12px;transition:all 0.2s;animation:slideIn 0.3s ease;cursor:pointer;border:1px solid transparent;}
+.todo-item:hover {background:rgba(255,255,255,0.04);}
 .todo-item.drag-over {border:1px dashed var(--accent);background:rgba(255,255,255,0.05);}
+.todo-item.selected {background:rgba(255,255,255,0.07);border:1px solid var(--accent);}
 .todo-drag {color:var(--text-secondary);opacity:0.35;cursor:grab;font-size:14px;flex-shrink:0;user-select:none;line-height:1;}
 .todo-drag:active {cursor:grabbing;}
 @keyframes slideIn {from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)}}
 .todo-check {width:16px;height:16px;border-radius:50%;border:1.5px solid var(--text-secondary);background:none;cursor:pointer;transition:all 0.3s;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0;}
 .todo-check.done {border-color:var(--accent);background:var(--accent);}
 .todo-check.done::after {content:'✓';font-size:9px;color:var(--bg-primary);}
-.todo-text {flex:1;background:none;border:none;color:var(--text-primary);font-family:var(--font-body);font-size:13px;outline:none;min-width:0;}
-.todo-text::placeholder {color:var(--text-secondary);}
+.todo-text {flex:1;color:var(--text-primary);font-family:var(--font-body);font-size:calc(13px * var(--fs));min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .todo-text.done {text-decoration:line-through;color:var(--text-secondary);}
-.todo-delete {background:none;border:none;color:var(--text-secondary);font-size:14px;cursor:pointer;padding:0 2px;opacity:0;transition:all 0.3s;line-height:1;}
-.todo-item:hover .todo-delete {opacity:1;}
-.todo-delete:hover {color:var(--accent);}
+.todo-edit-input {flex:1;background:var(--bg-secondary);border:none;border-bottom:1px solid var(--accent);color:var(--text-primary);font-family:var(--font-body);font-size:calc(13px * var(--fs));outline:none;min-width:0;padding:1px 4px;}
+.todo-edit-btn {background:none;border:none;color:var(--text-secondary);font-size:13px;cursor:pointer;padding:0 3px;opacity:0.5;transition:all 0.2s;flex-shrink:0;line-height:1;}
+.todo-item:hover .todo-edit-btn {opacity:1;}
+.todo-edit-btn:hover {color:var(--accent);opacity:1;}
+.todo-edit-btn.confirm {color:var(--accent);opacity:1;}
+.todo-delete {background:none;border:none;color:var(--text-secondary);font-size:14px;cursor:pointer;padding:0 2px;opacity:0;transition:all 0.3s;line-height:1;flex-shrink:0;}
+.todo-item:hover .todo-delete {opacity:0.6;}
+.todo-delete:hover {color:var(--accent);opacity:1;}
+.todo-select-hint {font-size:11px;color:var(--accent);letter-spacing:1px;opacity:0.7;margin-top:10px;text-align:center;display:none;}
+.todo-select-hint.visible {display:block;}
 /* Task summary button in main UI */
 .task-summary-btn {background:none;border:none;color:var(--text-secondary);font-family:var(--font-body);font-size:calc(11px * var(--fs));font-weight:400;letter-spacing:2px;text-transform:uppercase;cursor:pointer;padding:4px 8px;border-radius:8px;transition:all 0.3s;}
 .task-summary-btn:hover {color:var(--accent);}
@@ -141,7 +153,6 @@ body.hide-ui .daily-stats {opacity:0 !important;pointer-events:none !important;}
 .todo-overlay.open {opacity:1;pointer-events:all;}
 .todo-panel {position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.95);z-index:501;width:min(520px,94vw);height:500px;background:var(--bg-primary);border:1px solid var(--bg-secondary);border-radius:20px;padding:26px 22px;opacity:0;pointer-events:none;transition:transform 0.3s,opacity 0.3s;display:flex;flex-direction:column;}
 .todo-panel.open {opacity:1;pointer-events:all;transform:translate(-50%,-50%) scale(1);}
-.todo-text {flex:1;background:none;border:none;color:var(--text-primary);font-family:var(--font-body);font-size:calc(13px * var(--fs));outline:none;min-width:0;}
 .todo-delete {background:none;border:none;color:var(--text-secondary);font-size:calc(14px * var(--fs));cursor:pointer;padding:0 2px;opacity:0;transition:all 0.3s;line-height:1;}
 
 .daily-stats {position:fixed;bottom:14px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;transition:opacity 0.5s ease;z-index:20;}
@@ -476,11 +487,13 @@ body.hide-ui .daily-stats {opacity:0 !important;pointer-events:none !important;}
 <div class="todo-overlay" id="todoOverlay"></div>
 <div class="todo-panel" id="todoPanel">
   <button class="panel-close" id="todoPanelClose">×</button>
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-    <div class="panel-title" style="margin-bottom:0;" data-i18n="tasks">할 일</div>
-    <button class="todo-add-btn" id="todoAddBtn" style="font-size:22px;">+</button>
+  <div class="panel-title" style="margin-bottom:16px;" data-i18n="tasks">할 일</div>
+  <div class="todo-input-row">
+    <input class="todo-input" id="todoInput" type="text" placeholder="Add a task..." maxlength="100">
+    <button class="todo-add-btn" id="todoAddBtn">Add</button>
   </div>
-  <div class="todo-list" id="todoList" style="flex:1;"></div>
+  <div class="todo-select-hint" id="todoSelectHint">▶ 수행할 task를 클릭해서 선택하세요</div>
+  <div class="todo-list" id="todoList" style="flex:1;margin-top:8px;"></div>
 </div>
 
 <div class="daily-stats">
@@ -668,7 +681,7 @@ let MODES={focus:25*60,break:5*60},mode='focus',left=MODES.focus,total=MODES.foc
 let DEFAULT_MODES={focus:25*60,break:5*60};
 let running=false,paused=false,counting=false,intv=null,countIntv=null;
 let pCount=0,focusSec=0,alarmOn=true,alarmSoundOn=true,alarmType='gentleBell',todos=[];
-let overTime=false,overSec=0,pendingNextMode=null;
+let overTime=false,overSec=0,pendingNextMode=null,activeTaskIdx=-1;
 let uiHidden=false;
 let autoHideOn=false; // hide numbers ON/OFF (viewer setting)
 
@@ -801,14 +814,21 @@ function go(){
 }
 
 function tick(){
-  if(overTime){overSec++;if(mode==='focus')focusSec++;updDisp();updStats();return;}
-  left--;if(mode==='focus')focusSec++;
+  if(overTime){overSec++;if(mode==='focus'){focusSec++;if(focusSec%10===0)saveDay();}updDisp();updStats();return;}
+  left--;if(mode==='focus'){focusSec++;if(focusSec%10===0)saveDay();}
   resetTickRef(); // anchor RAF interpolation to this second
   updDisp();updStats();
   if(left<=0){
     $flash.classList.add('active');setTimeout(()=>$flash.classList.remove('active'),400);
     if(alarmOn)alarm();
-    if(mode==='focus'){pCount++;saveDay();if(alarmOn)notify(t('sessionDone'));pendingNextMode='break';}
+    if(mode==='focus'){
+      pCount++;saveDay();
+      if(alarmOn)notify(t('sessionDone'));
+      pendingNextMode='break';
+      if(activeTaskIdx>=0&&activeTaskIdx<todos.length){
+        todos[activeTaskIdx].done=true;saveTodos();activeTaskIdx=-1;renderTodos();
+      }
+    }
     else{if(alarmOn)notify(t('breakDone'));pendingNextMode='focus';}
     overTime=true;overSec=0;
     $box.classList.add('running');if(mode!=='focus')$box.classList.add('on-break');
@@ -852,38 +872,84 @@ function updTaskSummary(){
   const btn=document.getElementById('taskSummaryBtn');
   if(btn)btn.textContent=filled>0?`TASKS (${filled})`:'TASKS';
 }
-function ensureMinSlots(){
-  // Always keep at least 5 slots visible (pad with empty items up to 5)
-  while(todos.length<5)todos.push({text:'',done:false});
-  saveTodos();
+function updSelectHint(){
+  const hint=document.getElementById('todoSelectHint');
+  if(!hint)return;
+  const hasActive=todos.filter(td=>!td.done).length>0;
+  hint.classList.toggle('visible',hasActive);
 }
+let editingIdx=-1;
 function renderTodos(){
   const el=document.getElementById('todoList');el.innerHTML='';
   todos.forEach((td,i)=>{
     const d=document.createElement('div');
-    d.className='todo-item glass';
-    d.draggable=true;
+    const isEditing=(i===editingIdx);
+    d.className='todo-item glass'+(i===activeTaskIdx?' selected':'');
+    d.draggable=!isEditing;
     d.dataset.i=i;
-    d.innerHTML=`<span class="todo-drag" data-i="${i}">⠿</span><button class="todo-check ${td.done?'done':''}" data-i="${i}"></button><input class="todo-text ${td.done?'done':''}" value="${td.text.replace(/"/g,'&quot;')}" placeholder="${t('taskPH')}" data-i="${i}"><button class="todo-delete" data-i="${i}">×</button>`;
+    if(isEditing){
+      d.innerHTML=`
+        <span class="todo-drag" style="opacity:0.1;cursor:default;">⠿</span>
+        <button class="todo-check ${td.done?'done':''}" data-i="${i}"></button>
+        <input class="todo-edit-input" id="editInput${i}" value="${td.text.replace(/"/g,'&quot;')}" maxlength="100">
+        <button class="todo-edit-btn confirm" data-action="confirm" data-i="${i}" title="완료">✓</button>
+        <button class="todo-delete" data-i="${i}">×</button>`;
+    }else{
+      d.innerHTML=`
+        <span class="todo-drag" data-i="${i}">⠿</span>
+        <button class="todo-check ${td.done?'done':''}" data-i="${i}"></button>
+        <span class="todo-text ${td.done?'done':''}">${td.text.replace(/</g,'&lt;')}</span>
+        <button class="todo-edit-btn" data-action="edit" data-i="${i}" title="수정">✎</button>
+        <button class="todo-delete" data-i="${i}">×</button>`;
+      d.addEventListener('click',e=>{
+        if(e.target.closest('button')||e.target.classList.contains('todo-drag'))return;
+        activeTaskIdx=(activeTaskIdx===i)?-1:i;
+        renderTodos();
+      });
+    }
     el.appendChild(d);
+    if(isEditing){
+      const inp=document.getElementById(`editInput${i}`);
+      if(inp){
+        inp.focus();
+        const len=inp.value.length;
+        inp.setSelectionRange(len,len);
+        inp.addEventListener('keydown',e=>{if(e.key==='Enter')confirmEdit(i);});
+      }
+    }
   });
-  saveTodos();updTaskSummary();
+  updTaskSummary();updSelectHint();
   initDrag();
 }
+function confirmEdit(i){
+  const inp=document.getElementById(`editInput${i}`);
+  if(inp)todos[i].text=inp.value.trim()||todos[i].text;
+  editingIdx=-1;saveTodos();renderTodos();
+}
+function addTodo(){
+  const input=document.getElementById('todoInput');
+  const text=input.value.trim();
+  if(!text||todos.length>=10)return;
+  todos.push({text,done:false});
+  input.value='';saveTodos();renderTodos();
+  input.focus();
+}
 function saveTodos(){localStorage.setItem('pomo-todos',JSON.stringify(todos));}
-function loadTodos(){const d=localStorage.getItem('pomo-todos');if(d)todos=JSON.parse(d);renderTodos();}
+function loadTodos(){const d=localStorage.getItem('pomo-todos');if(d)todos=JSON.parse(d).filter(td=>td.text.trim()!=='');renderTodos();}
 document.getElementById('todoList').addEventListener('click',e=>{
   const i=+e.target.dataset.i;if(isNaN(i))return;
-  if(e.target.classList.contains('todo-check')){todos[i].done=!todos[i].done;renderTodos();}
-  else if(e.target.classList.contains('todo-delete')){todos.splice(i,1);renderTodos();}
+  if(e.target.classList.contains('todo-check')){todos[i].done=!todos[i].done;if(activeTaskIdx===i)activeTaskIdx=-1;saveTodos();renderTodos();}
+  else if(e.target.dataset.action==='edit'){editingIdx=i;renderTodos();}
+  else if(e.target.dataset.action==='confirm'){confirmEdit(i);}
+  else if(e.target.classList.contains('todo-delete')){
+    if(activeTaskIdx===i)activeTaskIdx=-1;
+    else if(activeTaskIdx>i)activeTaskIdx--;
+    if(editingIdx===i)editingIdx=-1;
+    todos.splice(i,1);saveTodos();renderTodos();
+  }
 });
-document.getElementById('todoList').addEventListener('input',e=>{
-  if(e.target.classList.contains('todo-text')){const i=+e.target.dataset.i;if(!isNaN(i)){todos[i].text=e.target.value;saveTodos();}}
-});
-document.getElementById('todoAddBtn').addEventListener('click',()=>{
-  if(todos.length>=10)return;todos.push({text:'',done:false});renderTodos();
-  const ins=document.querySelectorAll('.todo-text');ins[ins.length-1]?.focus();
-});
+document.getElementById('todoAddBtn').addEventListener('click',addTodo);
+document.getElementById('todoInput').addEventListener('keydown',e=>{if(e.key==='Enter')addTodo();});
 
 // ── Drag-and-drop reorder ──
 let dragSrc=null;
@@ -908,6 +974,9 @@ function initDrag(){
       const from=+dragSrc.dataset.i, to=+item.dataset.i;
       const moved=todos.splice(from,1)[0];
       todos.splice(to,0,moved);
+      if(activeTaskIdx===from)activeTaskIdx=to;
+      else if(activeTaskIdx>from&&activeTaskIdx<=to)activeTaskIdx--;
+      else if(activeTaskIdx<from&&activeTaskIdx>=to)activeTaskIdx++;
       renderTodos();
     });
   });
@@ -917,9 +986,9 @@ function initDrag(){
 const $todoOverlay=document.getElementById('todoOverlay');
 const $todoPanel=document.getElementById('todoPanel');
 function openTodoPanel(){
-  ensureMinSlots();
   renderTodos();
   $todoOverlay.classList.add('open');$todoPanel.classList.add('open');
+  setTimeout(()=>document.getElementById('todoInput')?.focus(),300);
 }
 function closeTodoPanel(){$todoOverlay.classList.remove('open');$todoPanel.classList.remove('open');}
 document.getElementById('taskSummaryBtn').addEventListener('click',openTodoPanel);
