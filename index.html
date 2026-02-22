@@ -104,6 +104,9 @@ body.hide-ui .daily-stats {opacity:0 !important;pointer-events:none !important;}
 .sound-select option {background:var(--bg-primary);color:var(--text-primary);}
 .sound-vol {-webkit-appearance:none;appearance:none;width:80px;height:3px;background:var(--bg-primary);border-radius:2px;outline:none;cursor:pointer;flex-shrink:0;}
 .sound-vol::-webkit-slider-thumb {-webkit-appearance:none;width:12px;height:12px;background:var(--accent);border-radius:50%;cursor:pointer;}
+.mute-btn {background:none;border:none;cursor:pointer;font-size:15px;flex-shrink:0;padding:0 2px;opacity:0.7;transition:opacity 0.2s;line-height:1;}
+.mute-btn:hover {opacity:1;}
+.mute-btn.muted {opacity:0.4;}
 /* Task summary button — looks clickable */
 .task-summary-btn {background:var(--bg-secondary);border:1px solid var(--bg-secondary);color:var(--text-secondary);font-family:var(--font-body);font-size:calc(11px * var(--fs));font-weight:400;letter-spacing:2px;text-transform:uppercase;cursor:pointer;padding:7px 18px;border-radius:20px;transition:all 0.3s;display:flex;align-items:center;gap:8px;}
 .task-summary-btn::before {content:'☰';font-size:calc(12px * var(--fs));opacity:0.7;}
@@ -113,10 +116,10 @@ body.hide-ui .daily-stats {opacity:0 !important;pointer-events:none !important;}
 .todo-header {display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
 .todo-title {font-size:calc(11px * var(--fs));font-weight:400;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);}
 .todo-input-row {display:flex;gap:8px;align-items:center;flex-shrink:0;}
-.todo-input {flex:1;background:var(--bg-secondary);border:1px solid transparent;color:var(--text-primary);font-family:var(--font-body);font-size:13px;padding:10px 14px;border-radius:10px;outline:none;transition:border 0.2s;}
+.todo-input {flex:1;background:var(--bg-secondary);border:1px solid transparent;color:var(--text-primary);font-family:var(--font-body);font-size:calc(13px * var(--fs));padding:10px 14px;border-radius:10px;outline:none;transition:border 0.2s;}
 .todo-input:focus {border-color:var(--accent);}
 .todo-input::placeholder {color:var(--text-secondary);}
-.todo-add-btn {background:var(--accent);color:var(--bg-primary);border:none;font-family:var(--font-body);font-size:11px;font-weight:600;letter-spacing:1.5px;padding:10px 16px;border-radius:10px;cursor:pointer;transition:opacity 0.2s;white-space:nowrap;}
+.todo-add-btn {background:var(--accent);color:var(--bg-primary);border:none;font-family:var(--font-body);font-size:calc(11px * var(--fs));font-weight:600;letter-spacing:1.5px;padding:10px 16px;border-radius:10px;cursor:pointer;transition:opacity 0.2s;white-space:nowrap;}
 .todo-add-btn:hover {opacity:0.85;}
 .todo-list {display:flex;flex-direction:column;gap:4px;max-height:340px;overflow-y:scroll;}
 .todo-list::-webkit-scrollbar {width:4px;}
@@ -140,6 +143,8 @@ body.hide-ui .daily-stats {opacity:0 !important;pointer-events:none !important;}
 .todo-item:hover .todo-edit-btn {opacity:1;}
 .todo-edit-btn:hover {color:var(--accent);opacity:1;}
 .todo-edit-btn.confirm {color:var(--accent);opacity:1;}
+.todo-edit-btn.delete-confirm {color:#e07070;opacity:1;font-size:11px;letter-spacing:0.5px;}
+.todo-edit-btn.delete-cancel {opacity:1;font-size:11px;letter-spacing:0.5px;}
 .todo-delete {background:none;border:none;color:var(--text-secondary);font-size:14px;cursor:pointer;padding:0 2px;opacity:0;transition:all 0.3s;line-height:1;flex-shrink:0;}
 .todo-item:hover .todo-delete {opacity:0.6;}
 .todo-delete:hover {color:var(--accent);opacity:1;}
@@ -397,6 +402,7 @@ body.hide-ui .daily-stats {opacity:0 !important;pointer-events:none !important;}
         <option value="wave" data-i18n-opt="soundWave">파도</option>
         <option value="wind" data-i18n-opt="soundWind">바람</option>
       </select>
+      <button class="mute-btn" id="muteBtn" title="음소거 (M)">🔊</button>
       <input type="range" class="sound-vol" id="soundVol" min="0" max="100" value="40">
     </div>
   </div>
@@ -787,7 +793,7 @@ function cancelCountdown(){
 function go(){
   if(counting){cancelCountdown();return;}
   if(paused){
-    paused=false;running=true;$start.textContent=t('pause');resumeBgSound();
+    paused=false;running=true;$start.textContent=t('pause');
     resetTickRef();startRaf();
     intv=setInterval(tick,1000);updStopBtn();
     if(autoHideOn)hideUI();
@@ -795,7 +801,7 @@ function go(){
   }
   if(running){
     paused=true;running=false;clearInterval(intv);stopRaf();
-    $start.textContent=t('resume');pauseBgSound();
+    $start.textContent=t('resume');
     document.title=overTime?`⏸ +${fmt(overSec)}`:`⏸ ${fmt(left)}`;
     updStopBtn();
     revealUI();
@@ -878,23 +884,29 @@ function updSelectHint(){
   const hasActive=todos.filter(td=>!td.done).length>0;
   hint.classList.toggle('visible',hasActive);
 }
-let editingIdx=-1;
+let editingIdx=-1, confirmDeleteIdx=-1;
 function renderTodos(){
   const el=document.getElementById('todoList');el.innerHTML='';
   todos.forEach((td,i)=>{
     const d=document.createElement('div');
     const isEditing=(i===editingIdx);
+    const isConfirming=(i===confirmDeleteIdx);
     d.className='todo-item glass'+(i===activeTaskIdx?' selected':'');
-    d.draggable=!isEditing;
+    d.draggable=!isEditing&&!isConfirming;
     d.dataset.i=i;
-    if(isEditing){
+    if(isConfirming){
+      d.innerHTML=`
+        <span style="flex:1;font-size:calc(12px * var(--fs));color:var(--text-secondary);">삭제하시겠습니까?</span>
+        <button class="todo-edit-btn delete-confirm" data-action="deleteConfirm" data-i="${i}">삭제</button>
+        <button class="todo-edit-btn delete-cancel" data-action="deleteCancel" data-i="${i}">취소</button>`;
+    } else if(isEditing){
       d.innerHTML=`
         <span class="todo-drag" style="opacity:0.1;cursor:default;">⠿</span>
         <button class="todo-check ${td.done?'done':''}" data-i="${i}"></button>
         <input class="todo-edit-input" id="editInput${i}" value="${td.text.replace(/"/g,'&quot;')}" maxlength="100">
         <button class="todo-edit-btn confirm" data-action="confirm" data-i="${i}" title="완료">✓</button>
         <button class="todo-delete" data-i="${i}">×</button>`;
-    }else{
+    } else {
       d.innerHTML=`
         <span class="todo-drag" data-i="${i}">⠿</span>
         <button class="todo-check ${td.done?'done':''}" data-i="${i}"></button>
@@ -939,14 +951,17 @@ function loadTodos(){const d=localStorage.getItem('pomo-todos');if(d)todos=JSON.
 document.getElementById('todoList').addEventListener('click',e=>{
   const i=+e.target.dataset.i;if(isNaN(i))return;
   if(e.target.classList.contains('todo-check')){todos[i].done=!todos[i].done;if(activeTaskIdx===i)activeTaskIdx=-1;saveTodos();renderTodos();}
-  else if(e.target.dataset.action==='edit'){editingIdx=i;renderTodos();}
+  else if(e.target.dataset.action==='edit'){editingIdx=i;confirmDeleteIdx=-1;renderTodos();}
   else if(e.target.dataset.action==='confirm'){confirmEdit(i);}
-  else if(e.target.classList.contains('todo-delete')){
+  else if(e.target.classList.contains('todo-delete')){confirmDeleteIdx=i;editingIdx=-1;renderTodos();}
+  else if(e.target.dataset.action==='deleteConfirm'){
     if(activeTaskIdx===i)activeTaskIdx=-1;
     else if(activeTaskIdx>i)activeTaskIdx--;
     if(editingIdx===i)editingIdx=-1;
+    confirmDeleteIdx=-1;
     todos.splice(i,1);saveTodos();renderTodos();
   }
+  else if(e.target.dataset.action==='deleteCancel'){confirmDeleteIdx=-1;renderTodos();}
 });
 document.getElementById('todoAddBtn').addEventListener('click',addTodo);
 document.getElementById('todoInput').addEventListener('keydown',e=>{if(e.key==='Enter')addTodo();});
@@ -1009,7 +1024,7 @@ function alarm(){
   stopAlarm();
   try{
     const c=getCtx();
-    const master=c.createGain();master.gain.value=0.18;master.connect(c.destination);
+    const master=c.createGain();master.gain.value=0.4;master.connect(c.destination);
     const dur=60;
     const type=alarmType;
     const sched=[];
@@ -1106,7 +1121,7 @@ function genSound(type){
   if(!bgCtx)bgCtx=new(window.AudioContext||window.webkitAudioContext);
   if(bgN.s){try{bgN.s.stop();}catch(e){}}bgN={};if(type==='none')return;
   const c=bgCtx,sr=c.sampleRate,len=sr*4,buf=c.createBuffer(2,len,sr),gn=c.createGain();
-  gn.gain.value=(document.getElementById('soundVol').value/100)*0.3;
+  gn.gain.value=muted?0:(document.getElementById('soundVol').value/100)*0.3;
   const cfg={rain:{g:'b',ft:'lowpass',f:800,q:1},cafe:{g:'p',ft:'bandpass',f:1200,q:0.5},fire:{g:'b',ft:'lowpass',f:400,q:0.8},wave:{g:'b',ft:'lowpass',f:500,q:0.6},wind:{g:'p',ft:'lowpass',f:600,q:0.7}}[type];
   if(!cfg)return;
   for(let ch=0;ch<2;ch++){const d=buf.getChannelData(ch);
@@ -1116,8 +1131,7 @@ function genSound(type){
   const s=c.createBufferSource();s.buffer=buf;s.loop=true;s.connect(fl);fl.connect(gn);gn.connect(c.destination);s.start();bgN={s,f:fl,g:gn};
 }
 function notify(m){if('Notification'in window&&Notification.permission==='granted')new Notification('Pomo 🍅',{body:m,silent:true});}
-function pauseBgSound(){if(bgCtx&&bgCtx.state==='running')bgCtx.suspend();}
-function resumeBgSound(){if(bgCtx&&bgCtx.state==='suspended')bgCtx.resume();}
+
 function reqNotif(){if('Notification'in window&&Notification.permission==='default')Notification.requestPermission();}
 function mkParticles(){
   const c=document.getElementById('particles');
@@ -1353,10 +1367,10 @@ document.addEventListener('keydown',e=>{
   if(['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName))return;
   if(e.code==='Space'){e.preventDefault();go();}
   else if(e.key==='f'||e.key==='F'){e.preventDefault();toggleFullscreen();}
+  else if(e.key==='m'||e.key==='M'){e.preventDefault();toggleMute();}
   else if(e.key==='h'||e.key==='H'){
     e.preventDefault();
     document.getElementById('hideUiBtn').click();
-    // If timer is running, immediately apply hide/reveal
     if(running&&!counting){
       if(autoHideOn) hideUI(); else revealUI();
     }
@@ -1367,8 +1381,24 @@ document.querySelectorAll('.lang-btn').forEach(b=>b.addEventListener('click',()=
   document.querySelectorAll('.lang-btn').forEach(x=>x.classList.remove('active'));
   b.classList.add('active');lang=b.dataset.lang;updateUI();localStorage.setItem('pomo-lang',lang);
 }));
+let muted=false;
+function toggleMute(){
+  muted=!muted;
+  const btn=document.getElementById('muteBtn');
+  btn.textContent=muted?'🔇':'🔊';
+  btn.classList.toggle('muted',muted);
+  if(bgN.g){
+    const vol=(document.getElementById('soundVol').value/100)*0.3;
+    bgN.g.gain.value=muted?0:vol;
+  }
+  localStorage.setItem('pomo-muted',muted);
+}
+document.getElementById('muteBtn').addEventListener('click',toggleMute);
 document.getElementById('soundSelect').addEventListener('change',e=>{genSound(e.target.value);localStorage.setItem('pomo-sound',e.target.value);});
-document.getElementById('soundVol').addEventListener('input',e=>{if(bgN.g)bgN.g.gain.value=(e.target.value/100)*0.3;localStorage.setItem('pomo-vol',e.target.value);});
+document.getElementById('soundVol').addEventListener('input',e=>{
+  localStorage.setItem('pomo-vol',e.target.value);
+  if(bgN.g&&!muted)bgN.g.gain.value=(e.target.value/100)*0.3;
+});
 window.addEventListener('resize',()=>{
   document.documentElement.style.setProperty('--timer-actual', calcRingSize()+'px');
 });
@@ -1394,6 +1424,8 @@ window.addEventListener('resize',()=>{
   // Sound
   const sV=localStorage.getItem('pomo-vol');if(sV)document.getElementById('soundVol').value=sV;
   const sS=localStorage.getItem('pomo-sound');if(sS)document.getElementById('soundSelect').value=sS;
+  const sMuted=localStorage.getItem('pomo-muted');
+  if(sMuted==='true'){muted=true;const btn=document.getElementById('muteBtn');btn.textContent='🔇';btn.classList.add('muted');}
 
   // Timer defaults
   const sD=localStorage.getItem('pomo-defaults');
