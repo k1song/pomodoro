@@ -155,10 +155,9 @@ body.hide-ui .daily-stats {opacity:0 !important;pointer-events:none !important;}
 .feedback-send {width:100%;padding:11px 0;border-radius:12px;border:none;background:var(--accent);color:var(--bg-primary);font-family:var(--font-body);font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;margin-top:12px;}
 .feedback-send:hover {opacity:0.85;transform:translateY(-1px);}
 .feedback-send:disabled {opacity:0.4;cursor:not-allowed;transform:none;}
-.pomo-dots {display:flex;gap:6px;}
-.pomo-dot {width:8px;height:8px;border-radius:50%;background:var(--bg-secondary);transition:all 0.4s;}
+.pomo-dot {width:7px;height:7px;border-radius:50%;background:var(--bg-secondary);transition:all 0.4s;}
 .pomo-dot.filled {background:var(--accent);box-shadow:0 0 8px var(--accent-glow);}
-.stats-text {font-size:calc(11px * var(--fs));color:var(--text-secondary);letter-spacing:1px;display:flex;gap:12px;}
+.stats-text {font-size:calc(11px * var(--fs));color:var(--text-secondary);letter-spacing:1px;display:flex;gap:12px;align-items:center;}
 .stats-text span {display:flex;align-items:center;gap:4px;}
 
 .session-flash {position:fixed;inset:0;background:var(--accent);opacity:0;z-index:200;pointer-events:none;transition:opacity 0.15s;}
@@ -192,6 +191,8 @@ body.hide-ui .daily-stats {opacity:0 !important;pointer-events:none !important;}
 .toggle.on::after {left:21px;background:var(--bg-primary);}
 .reset-btn {background:none;border:1px solid var(--text-secondary);color:var(--text-secondary);font-family:var(--font-body);font-size:11px;letter-spacing:2px;padding:5px 14px;border-radius:8px;cursor:pointer;transition:all 0.3s;}
 .reset-btn:hover {border-color:var(--accent);color:var(--accent);}
+.alarm-select {background:var(--bg-secondary);border:none;color:var(--text-primary);font-family:var(--font-body);font-size:12px;padding:4px 8px;border-radius:8px;cursor:pointer;outline:none;}
+.alarm-select option {background:var(--bg-primary);}
 /* Stepper — fixed sizes */
 .s-inputs {display:flex;align-items:center;gap:4px;}
 .s-val {width:32px;text-align:center;font-family:var(--font-display);font-size:18px;font-weight:300;color:var(--text-primary);background:none;border:1px solid transparent;border-radius:6px;outline:none;padding:2px 0;transition:border-color 0.3s;-moz-appearance:textfield;}
@@ -322,9 +323,19 @@ body.hide-ui .daily-stats {opacity:0 !important;pointer-events:none !important;}
     </div>
   </div>
   <div class="s-group">
-    <div class="s-label" data-i18n="optionsLabel">옵션</div>
-    <div class="s-row"><label data-i18n="autoStart">자동 시작</label><button class="toggle" id="toggleAuto"></button></div>
-    <div class="s-row"><label data-i18n="alarmSound">알람</label><button class="toggle on" id="toggleAlarm"></button></div>
+    <div class="s-label" data-i18n="alarmLabel">알람</div>
+    <div class="s-row"><label data-i18n="alarmNotif">알람 알림</label><button class="toggle on" id="toggleAlarm"></button></div>
+    <div class="s-row"><label data-i18n="alarmSoundLabel">알람 소리</label><button class="toggle on" id="toggleAlarmSound"></button></div>
+    <div class="s-row" style="margin-top:4px;">
+      <label data-i18n="alarmTypeLabel">소리 종류</label>
+      <select class="alarm-select" id="alarmTypeSelect">
+        <option value="gentleBell">Gentle Bell</option>
+        <option value="tibetanBell">Tibetan Bell</option>
+        <option value="harpArpeggio">Harp Arpeggio</option>
+        <option value="guitarHarmonic">Guitar Harmonic</option>
+        <option value="aurora">Aurora</option>
+      </select>
+    </div>
     <div class="s-row"><button class="reset-btn" id="resetDefaultBtn" data-i18n="resetDefault">기본값</button></div>
   </div>
 </div>
@@ -469,8 +480,10 @@ body.hide-ui .daily-stats {opacity:0 !important;pointer-events:none !important;}
 </div>
 
 <div class="daily-stats">
-  <div class="pomo-dots" id="pomoDots"><div class="pomo-dot"></div><div class="pomo-dot"></div><div class="pomo-dot"></div><div class="pomo-dot"></div><div class="pomo-dot"></div></div>
-  <div class="stats-text"><span>🍅 <em id="pomoCountText">0</em></span><span>⏱ <em id="totalTimeText">0h 0m</em></span></div>
+  <div class="stats-text">
+    <span>🍅 <em id="pomoCountText">0</em></span>
+    <span>⏱ <em id="totalTimeText">0h 0m</em></span>
+  </div>
   <a class="contact-link" id="feedbackBtn">✉ feedback</a>
 </div>
 
@@ -495,7 +508,7 @@ const i18n={
     soundNone:'무음',soundRain:'빗소리',soundCafe:'카페',soundFire:'모닥불',soundWave:'파도',soundWind:'바람',
     sessionDone:'세션 완료!',breakDone:'휴식 끝! 다시 집중하세요',tabFocus:'집중 중',tabBreak:'휴식 중',
     tasks:'할 일',taskPH:'할 일을 입력하세요...',
-    settings:'설정',timerSettings:'기본 타이머',optionsLabel:'옵션',autoStart:'자동 시작',alarmSound:'알람',resetDefault:'기본값',
+    settings:'설정',timerSettings:'기본 타이머',optionsLabel:'옵션',alarmLabel:'알람',alarmNotif:'알람 알림',alarmSoundLabel:'알람 소리',alarmTypeLabel:'소리 종류',alarmGentleBell:'젠틀 벨',alarmSingingBowl:'싱잉볼',alarmSoftChime:'소프트 차임',alarmBreath:'브레스',alarmRainDrop:'레인드롭',resetDefault:'기본값',
     continueTitle:'계속 하시겠습니까?',continueKeep:'계속하기',continueStop:'종료',
     helpTitle:'사용 방법',
     viewerTitle:'뷰어 & 사운드',colorLabel:'색상',fontSizeLabel:'글씨 크기',screenLabel:'화면',soundLabel:'소리',
@@ -508,7 +521,7 @@ const i18n={
     soundNone:'Silent',soundRain:'Rain',soundCafe:'Café',soundFire:'Fire',soundWave:'Waves',soundWind:'Wind',
     sessionDone:'Session done!',breakDone:'Break over! Time to focus',tabFocus:'Focus',tabBreak:'Break',
     tasks:'Tasks',taskPH:'Add a task...',
-    settings:'Settings',timerSettings:'Default Timer',optionsLabel:'Options',autoStart:'Auto Start',alarmSound:'Alarm',resetDefault:'Default',
+    settings:'Settings',timerSettings:'Default Timer',optionsLabel:'Options',alarmLabel:'Alarm',alarmNotif:'Alarm Notify',alarmSoundLabel:'Alarm Sound',alarmTypeLabel:'Sound Type',alarmGentleBell:'Gentle Bell',alarmSingingBowl:'Singing Bowl',alarmSoftChime:'Soft Chime',alarmBreath:'Breath',alarmRainDrop:'Rain Drop',resetDefault:'Default',
     continueTitle:'Keep going?',continueKeep:'Continue',continueStop:'Stop',
     helpTitle:'How to Use',
     viewerTitle:'Viewer & Sound',colorLabel:'Color',fontSizeLabel:'Text Size',screenLabel:'Screen',soundLabel:'Sound',
@@ -521,7 +534,7 @@ const i18n={
     soundNone:'静音',soundRain:'雨声',soundCafe:'咖啡厅',soundFire:'篝火',soundWave:'海浪',soundWind:'风声',
     sessionDone:'完成！',breakDone:'休息结束！继续专注',tabFocus:'专注',tabBreak:'休息',
     tasks:'任务',taskPH:'输入任务...',
-    settings:'设置',timerSettings:'默认计时器',optionsLabel:'选项',autoStart:'自动开始',alarmSound:'闹钟',resetDefault:'默认值',
+    settings:'设置',timerSettings:'默认计时器',optionsLabel:'选项',alarmLabel:'闹钟',alarmNotif:'闹钟通知',alarmSoundLabel:'闹钟声音',alarmTypeLabel:'声音类型',alarmGentleBell:'轻柔铃声',alarmSingingBowl:'颂钵',alarmSoftChime:'柔和钟声',alarmBreath:'呼吸',alarmRainDrop:'雨滴',resetDefault:'默认值',
     continueTitle:'继续吗？',continueKeep:'继续',continueStop:'结束',
     helpTitle:'使用说明',
     viewerTitle:'视图 & 声音',colorLabel:'颜色',fontSizeLabel:'字体大小',screenLabel:'屏幕',soundLabel:'声音',
@@ -650,7 +663,7 @@ function updateUI(){
 let MODES={focus:25*60,break:5*60},mode='focus',left=MODES.focus,total=MODES.focus;
 let DEFAULT_MODES={focus:25*60,break:5*60};
 let running=false,paused=false,counting=false,intv=null,countIntv=null;
-let pCount=0,focusSec=0,autoOn=false,alarmOn=true,todos=[];
+let pCount=0,focusSec=0,alarmOn=true,alarmSoundOn=true,alarmType='gentleBell',todos=[];
 let overTime=false,overSec=0,pendingNextMode=null;
 let uiHidden=false;
 let autoHideOn=false; // hide numbers ON/OFF (viewer setting)
@@ -689,9 +702,10 @@ function resetTickRef(){tickStartTime=Date.now();leftAtTickStart=left;}
 const $time=document.getElementById('timerTime'),$label=document.getElementById('timerLabel');
 const $box=document.getElementById('timerContainer'),$start=document.getElementById('startBtn');
 const $stop=document.getElementById('stopBtn');
-const $ring=document.getElementById('ringProgress'),$dots=document.getElementById('pomoDots');
+const $ring=document.getElementById('ringProgress');
 const $pCount=document.getElementById('pomoCountText'),$tTime=document.getElementById('totalTimeText');
 const $flash=document.getElementById('sessionFlash');
+const $tAlarm=document.getElementById('toggleAlarm');
 const C=2*Math.PI*150; $ring.style.strokeDasharray=C;
 
 function fmt(s){
@@ -713,11 +727,6 @@ function updDisp(){
 }
 function updLabel(){$label.textContent=mode==='focus'?t('focusing'):t('breaking');}
 function updStats(){$pCount.textContent=pCount;const h=Math.floor(focusSec/3600),m=Math.floor((focusSec%3600)/60);$tTime.textContent=`${h}h ${m}m`;}
-function updDots(){
-  const ds=$dots.querySelectorAll('.pomo-dot'),c=pCount%5;
-  ds.forEach((d,i)=>d.classList.toggle('filled',i<(c===0&&pCount>0?5:c)));
-  if(c===0&&pCount>0)setTimeout(()=>ds.forEach(d=>d.classList.remove('filled')),2000);
-}
 function updStopBtn(){$stop.classList.toggle('visible',(running||paused||overTime)&&!counting);}
 
 // ── Stop button ──
@@ -795,7 +804,7 @@ function tick(){
   if(left<=0){
     $flash.classList.add('active');setTimeout(()=>$flash.classList.remove('active'),400);
     if(alarmOn)alarm();
-    if(mode==='focus'){pCount++;updDots();saveDay();if(alarmOn)notify(t('sessionDone'));pendingNextMode='break';}
+    if(mode==='focus'){pCount++;saveDay();if(alarmOn)notify(t('sessionDone'));pendingNextMode='break';}
     else{if(alarmOn)notify(t('breakDone'));pendingNextMode='focus';}
     overTime=true;overSec=0;
     $box.classList.add('running');if(mode!=='focus')$box.classList.add('on-break');
@@ -811,9 +820,10 @@ function finishSession(){
   $start.textContent=t('start');$label.textContent=t('ready');document.title=TITLE;
   const next=pendingNextMode||'focus';pendingNextMode=null;setMode(next);updStopBtn();
   revealUI();
-  if(autoOn)setTimeout(go,1500);
+  stopAlarm();
+  if(false)setTimeout(go,1500); // auto-start removed
 }
-document.getElementById('continueKeep').addEventListener('click',hideContinueModal);
+document.getElementById('continueKeep').addEventListener('click',()=>{stopAlarm();hideContinueModal();});
 document.getElementById('continueStop').addEventListener('click',finishSession);
 
 function setMode(m){
@@ -831,7 +841,7 @@ function setMode(m){
 // ═══════════════════════════════════════════════
 function dayKey(){return'pomo-'+new Date().toISOString().slice(0,10);}
 function saveDay(){localStorage.setItem(dayKey(),JSON.stringify({c:pCount,s:focusSec}));}
-function loadDay(){const d=localStorage.getItem(dayKey());if(d){const p=JSON.parse(d);pCount=p.c||0;focusSec=p.s||0;}updDots();updStats();}
+function loadDay(){const d=localStorage.getItem(dayKey());if(d){const p=JSON.parse(d);pCount=p.c||0;focusSec=p.s||0;}updStats();}
 
 function updTaskSummary(){
   const filled=todos.filter(td=>td.text.trim()!=='').length;
@@ -915,8 +925,109 @@ $todoOverlay.addEventListener('click',closeTodoPanel);
 // ═══════════════════════════════════════════════
 // Audio
 // ═══════════════════════════════════════════════
-let actx; function getCtx(){if(!actx)actx=new(window.AudioContext||window.webkitAudioContext);return actx;}
-function alarm(){try{const c=getCtx(),n=c.currentTime;[440,554,659].forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0,n+i*.3);g.gain.linearRampToValueAtTime(.15,n+i*.3+.05);g.gain.exponentialRampToValueAtTime(.001,n+i*.3+.8);o.connect(g);g.connect(c.destination);o.start(n+i*.3);o.stop(n+i*.3+.8);});}catch(e){}}
+let actx,alarmNode=null,alarmStopTimer=null;
+function getCtx(){if(!actx)actx=new(window.AudioContext||window.webkitAudioContext);return actx;}
+function stopAlarm(){
+  if(alarmStopTimer){clearTimeout(alarmStopTimer);alarmStopTimer=null;}
+  if(alarmNode){try{alarmNode.stop();}catch(e){}alarmNode=null;}
+}
+function alarm(){
+  if(!alarmSoundOn)return;
+  stopAlarm();
+  try{
+    const c=getCtx();
+    const master=c.createGain();master.gain.value=0.18;master.connect(c.destination);
+    const dur=60;
+    const type=alarmType;
+    const sched=[];
+
+    if(type==='gentleBell'){
+      for(let t=0;t<dur;t+=4){
+        [523,659,784].forEach((f,i)=>{
+          const o=c.createOscillator(),g=c.createGain();
+          o.type='sine';o.frequency.value=f;
+          const s=t+i*0.35,e=s+1.8;
+          g.gain.setValueAtTime(0,c.currentTime+s);
+          g.gain.linearRampToValueAtTime(0.15,c.currentTime+s+0.05);
+          g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+e);
+          o.connect(g);g.connect(master);o.start(c.currentTime+s);o.stop(c.currentTime+e);
+          sched.push(o);
+        });
+      }
+
+    }else if(type==='tibetanBell'){
+      for(let t=0;t<dur;t+=5){
+        [[196,1],[392,0.3],[588,0.1]].forEach(([f,v])=>{
+          const o=c.createOscillator(),g=c.createGain();
+          o.type='sine';o.frequency.value=f;
+          const e=t+4.5;
+          g.gain.setValueAtTime(0,c.currentTime+t);
+          g.gain.linearRampToValueAtTime(v*0.15,c.currentTime+t+0.08);
+          g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+e);
+          o.connect(g);g.connect(master);o.start(c.currentTime+t);o.stop(c.currentTime+e);
+          sched.push(o);
+        });
+      }
+
+    }else if(type==='harpArpeggio'){
+      const up=[261,329,392,523,659,784,1047,1175];
+      const seq=[...up,...[...up].reverse()];
+      for(let r=0;r*seq.length*0.18<dur;r++){
+        seq.forEach((f,i)=>{
+          const t=r*seq.length*0.18+i*0.18;
+          if(t>=dur)return;
+          const o=c.createOscillator(),g=c.createGain();
+          o.type='sine';o.frequency.value=f;
+          g.gain.setValueAtTime(0,c.currentTime+t);
+          g.gain.linearRampToValueAtTime(0.09,c.currentTime+t+0.02);
+          g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+t+0.5);
+          o.connect(g);g.connect(master);o.start(c.currentTime+t);o.stop(c.currentTime+t+0.6);
+          sched.push(o);
+        });
+      }
+
+    }else if(type==='guitarHarmonic'){
+      // 기타 하모닉스 — 자연 배음열, 긴 sustain
+      const baseFreqs=[164,220,294,330];
+      for(let t=0;t<dur;t+=4){
+        const f=baseFreqs[Math.floor((t/4)%baseFreqs.length)];
+        [1,2,3,4,6].forEach((h,i)=>{
+          const o=c.createOscillator(),g=c.createGain();
+          o.type='sine';o.frequency.value=f*h;
+          const vol=0.14/(i+1);
+          const e=t+3.5;
+          g.gain.setValueAtTime(0,c.currentTime+t);
+          g.gain.linearRampToValueAtTime(vol,c.currentTime+t+0.03);
+          g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+e);
+          o.connect(g);g.connect(master);o.start(c.currentTime+t);o.stop(c.currentTime+e);
+          sched.push(o);
+        });
+      }
+
+    }else if(type==='aurora'){
+      const chords=[[261,329,392],[293,369,440],[246,311,370],[220,277,330]];
+      for(let r=0;r*7<dur;r++){
+        chords[r%chords.length].forEach(f=>{
+          const o=c.createOscillator(),g=c.createGain();
+          o.type='sine';
+          const t=r*7;
+          o.frequency.setValueAtTime(f,c.currentTime+t);
+          o.frequency.linearRampToValueAtTime(f*1.005,c.currentTime+t+3.5);
+          o.frequency.linearRampToValueAtTime(f,c.currentTime+t+7);
+          g.gain.setValueAtTime(0,c.currentTime+t);
+          g.gain.linearRampToValueAtTime(0.07,c.currentTime+t+1.5);
+          g.gain.linearRampToValueAtTime(0.04,c.currentTime+t+6);
+          g.gain.linearRampToValueAtTime(0,c.currentTime+t+7);
+          o.connect(g);g.connect(master);o.start(c.currentTime+t);o.stop(c.currentTime+t+7.1);
+          sched.push(o);
+        });
+      }
+    }
+
+    alarmNode={stop:()=>sched.forEach(o=>{try{o.stop();}catch(e){}})};
+    alarmStopTimer=setTimeout(stopAlarm, dur*1000);
+  }catch(e){}
+}
 let bgCtx,bgN={};
 function genSound(type){
   if(!bgCtx)bgCtx=new(window.AudioContext||window.webkitAudioContext);
@@ -993,7 +1104,7 @@ document.getElementById('feedbackSend').addEventListener('click',async()=>{
 // ═══════════════════════════════════════════════
 // Settings panel
 // ═══════════════════════════════════════════════
-const $ov=document.getElementById('overlay'),$pn=document.getElementById('panel'),$ta=document.getElementById('toggleAuto');
+const $ov=document.getElementById('overlay'),$pn=document.getElementById('panel');
 const $fH=document.getElementById('setFocusH'),$fM=document.getElementById('setFocusM');
 const $bH=document.getElementById('setBreakH'),$bM=document.getElementById('setBreakM');
 
@@ -1020,9 +1131,10 @@ document.getElementById('settingsBtn').addEventListener('click',()=>{
 function closeSettingsPanel(){$ov.classList.remove('open');$pn.classList.remove('open');applyPanelDefaults();}
 document.getElementById('panelClose').addEventListener('click',closeSettingsPanel);
 $ov.addEventListener('click',closeSettingsPanel);
-$ta.addEventListener('click',()=>{autoOn=!autoOn;$ta.classList.toggle('on',autoOn);localStorage.setItem('pomo-auto',autoOn);});
-const $tAlarm=document.getElementById('toggleAlarm');
 $tAlarm.addEventListener('click',()=>{alarmOn=!alarmOn;$tAlarm.classList.toggle('on',alarmOn);localStorage.setItem('pomo-alarm',alarmOn);});
+const $tAlarmSound=document.getElementById('toggleAlarmSound');
+$tAlarmSound.addEventListener('click',()=>{alarmSoundOn=!alarmSoundOn;$tAlarmSound.classList.toggle('on',alarmSoundOn);localStorage.setItem('pomo-alarmSound',alarmSoundOn);});
+document.getElementById('alarmTypeSelect').addEventListener('change',e=>{alarmType=e.target.value;localStorage.setItem('pomo-alarmType',alarmType);});
 document.getElementById('resetDefaultBtn').addEventListener('click',()=>{setRowMin('focus',25);setRowMin('break',5);});
 
 // ═══════════════════════════════════════════════
@@ -1221,9 +1333,11 @@ window.addEventListener('resize',()=>{
   MODES={focus:DEFAULT_MODES.focus,break:DEFAULT_MODES.break};
   left=MODES.focus;total=MODES.focus;
 
-  autoOn=localStorage.getItem('pomo-auto')==='true';$ta.classList.toggle('on',autoOn);
   const sAlarm=localStorage.getItem('pomo-alarm');if(sAlarm!==null){alarmOn=sAlarm==='true';}
   $tAlarm.classList.toggle('on',alarmOn);
+  const sAlarmSound=localStorage.getItem('pomo-alarmSound');if(sAlarmSound!==null){alarmSoundOn=sAlarmSound==='true';}
+  document.getElementById('toggleAlarmSound').classList.toggle('on',alarmSoundOn);
+  const sAlarmType=localStorage.getItem('pomo-alarmType');if(sAlarmType){alarmType=sAlarmType;document.getElementById('alarmTypeSelect').value=alarmType;}
   const sAutoHide=localStorage.getItem('pomo-autohide');
   if(sAutoHide!==null){autoHideOn=sAutoHide==='true';}
   document.getElementById('hideUiBtn').classList.toggle('is-on', autoHideOn);
