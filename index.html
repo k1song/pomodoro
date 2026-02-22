@@ -381,10 +381,6 @@ body.hide-ui .daily-stats {opacity:0 !important;pointer-events:none !important;}
       <button class="vw-btn" id="fullscreenBtn" data-i18n="fullscreenBtn">⛶ 전체화면</button>
       <button class="vw-btn" id="hideUiBtn" data-i18n="hideUiBtn">⊘ 숫자 가리기</button>
     </div>
-    <div class="s-row" style="margin-top:10px;">
-      <label data-i18n="autoHideLabel">시작 시 자동 가리기</label>
-      <button class="toggle" id="toggleAutoHide"></button>
-    </div>
   </div>
 
   <div class="s-row" style="margin-top:6px;">
@@ -657,7 +653,17 @@ let running=false,paused=false,counting=false,intv=null,countIntv=null;
 let pCount=0,focusSec=0,autoOn=false,alarmOn=true,todos=[];
 let overTime=false,overSec=0,pendingNextMode=null;
 let uiHidden=false;
-let autoHideOn=false; // auto-hide numbers when timer starts
+let autoHideOn=false; // hide numbers ON/OFF (viewer setting)
+
+function revealUI(){
+  uiHidden=false;
+  document.body.classList.remove('hide-ui');
+}
+function hideUI(){
+  if(!running||counting)return;
+  uiHidden=true;
+  document.body.classList.add('hide-ui');
+}
 
 // RAF smooth ring animation
 let rafId=null;
@@ -758,7 +764,7 @@ function go(){
     paused=false;running=true;$start.textContent=t('pause');resumeBgSound();
     resetTickRef();startRaf();
     intv=setInterval(tick,1000);updStopBtn();
-    if(autoHideOn)hideUI(); // re-hide on resume if auto-hide is on
+    if(autoHideOn)hideUI();
     return;
   }
   if(running){
@@ -766,7 +772,7 @@ function go(){
     $start.textContent=t('resume');pauseBgSound();
     document.title=overTime?`⏸ +${fmt(overSec)}`:`⏸ ${fmt(left)}`;
     updStopBtn();
-    revealUI(); // always show UI when paused
+    revealUI();
     return;
   }
   showRunningDisplay();
@@ -777,7 +783,7 @@ function go(){
     updLabel();updDisp();updStopBtn();
     resetTickRef();startRaf();
     intv=setInterval(tick,1000);
-    if(autoHideOn)hideUI(); // auto-hide if enabled
+    if(autoHideOn)hideUI();
   });
 }
 
@@ -828,9 +834,14 @@ function saveDay(){localStorage.setItem(dayKey(),JSON.stringify({c:pCount,s:focu
 function loadDay(){const d=localStorage.getItem(dayKey());if(d){const p=JSON.parse(d);pCount=p.c||0;focusSec=p.s||0;}updDots();updStats();}
 
 function updTaskSummary(){
-  const total=todos.length;
+  const filled=todos.filter(td=>td.text.trim()!=='').length;
   const btn=document.getElementById('taskSummaryBtn');
-  if(btn)btn.textContent=total>0?`TASKS (${total})`:'TASKS';
+  if(btn)btn.textContent=filled>0?`TASKS (${filled})`:'TASKS';
+}
+function ensureMinSlots(){
+  // Always keep at least 5 slots visible (pad with empty items up to 5)
+  while(todos.length<5)todos.push({text:'',done:false});
+  saveTodos();
 }
 function renderTodos(){
   const el=document.getElementById('todoList');el.innerHTML='';
@@ -891,7 +902,11 @@ function initDrag(){
 // ── Todo popup ──
 const $todoOverlay=document.getElementById('todoOverlay');
 const $todoPanel=document.getElementById('todoPanel');
-function openTodoPanel(){$todoOverlay.classList.add('open');$todoPanel.classList.add('open');}
+function openTodoPanel(){
+  ensureMinSlots();
+  renderTodos();
+  $todoOverlay.classList.add('open');$todoPanel.classList.add('open');
+}
 function closeTodoPanel(){$todoOverlay.classList.remove('open');$todoPanel.classList.remove('open');}
 document.getElementById('taskSummaryBtn').addEventListener('click',openTodoPanel);
 document.getElementById('todoPanelClose').addEventListener('click',closeTodoPanel);
@@ -1074,35 +1089,13 @@ document.addEventListener('fullscreenchange',()=>{
 });
 document.getElementById('fullscreenBtn').addEventListener('click',toggleFullscreen);
 
-// ── Hide-numbers (only after countdown completes, while running) ──
-// "running" = countdown done and timer is ticking
-function canHide(){return running && !counting;}
-
-function revealUI(){
-  uiHidden=false;
-  document.body.classList.remove('hide-ui');
-}
-function hideUI(){
-  if(!canHide())return;
-  uiHidden=true;
-  document.body.classList.add('hide-ui');
-}
-function toggleHideUI(){
-  if(uiHidden){revealUI();}
-  else{hideUI();}
-}
-
+// ── Hide Numbers ──
 document.getElementById('hideUiBtn').addEventListener('click',()=>{
-  // Close viewer panel first, then toggle
-  $vov.classList.remove('open');$vpn.classList.remove('open');
-  setTimeout(toggleHideUI,150);
-});
-
-const $toggleAutoHide=document.getElementById('toggleAutoHide');
-$toggleAutoHide.addEventListener('click',()=>{
   autoHideOn=!autoHideOn;
-  $toggleAutoHide.classList.toggle('on',autoHideOn);
-  localStorage.setItem('pomo-autohide',autoHideOn);
+  document.getElementById('hideUiBtn').classList.toggle('is-on', autoHideOn);
+  localStorage.setItem('pomo-autohide', autoHideOn);
+  // If turning off while hidden, reveal immediately
+  if(!autoHideOn) revealUI();
 });
 
 // ── Viewer default (lofi + fs3) ──
@@ -1111,7 +1104,9 @@ document.getElementById('viewerDefaultBtn').addEventListener('click',()=>{
   document.querySelectorAll('.color-swatch').forEach(x=>x.classList.toggle('active',x.dataset.t==='lofi'));
   localStorage.setItem('pomo-theme','lofi');
   applyFs(3);
-  autoHideOn=false;$toggleAutoHide.classList.remove('on');localStorage.setItem('pomo-autohide',false);
+  autoHideOn=false;
+  document.getElementById('hideUiBtn').classList.remove('is-on');
+  localStorage.setItem('pomo-autohide',false);
 });
 
 // ── Open/close viewer panel ──
@@ -1173,7 +1168,14 @@ document.addEventListener('keydown',e=>{
   if(['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName))return;
   if(e.code==='Space'){e.preventDefault();go();}
   else if(e.key==='f'||e.key==='F'){e.preventDefault();toggleFullscreen();}
-  else if(e.key==='h'||e.key==='H'){e.preventDefault();toggleHideUI();}
+  else if(e.key==='h'||e.key==='H'){
+    e.preventDefault();
+    document.getElementById('hideUiBtn').click();
+    // If timer is running, immediately apply hide/reveal
+    if(running&&!counting){
+      if(autoHideOn) hideUI(); else revealUI();
+    }
+  }
 });
 document.querySelectorAll('.mode-tab').forEach(tab=>tab.addEventListener('click',()=>setMode(tab.dataset.mode)));
 document.querySelectorAll('.lang-btn').forEach(b=>b.addEventListener('click',()=>{
@@ -1224,7 +1226,7 @@ window.addEventListener('resize',()=>{
   $tAlarm.classList.toggle('on',alarmOn);
   const sAutoHide=localStorage.getItem('pomo-autohide');
   if(sAutoHide!==null){autoHideOn=sAutoHide==='true';}
-  $toggleAutoHide.classList.toggle('on',autoHideOn);
+  document.getElementById('hideUiBtn').classList.toggle('is-on', autoHideOn);
 
   loadDay();loadTodos();mkParticles();updDisp();updateUI();buildEditUI();
   reqNotif(); // request notification permission once on load
