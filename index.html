@@ -44,8 +44,10 @@ html,body {width:100%;height:100%;overflow:hidden;font-family:var(--font-body);b
 .particle {position:absolute;width:3px;height:3px;background:var(--text-primary);border-radius:50%;opacity:0;animation:float-up linear infinite;}
 @keyframes float-up {0%{opacity:0;transform:translateY(0) scale(0.5)} 10%{opacity:0.4} 90%{opacity:0.1} 100%{opacity:0;transform:translateY(-100vh) scale(0)}}
 
-/* ── App layout ── */
-.app {position:relative;z-index:10;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 16px 50px;transition:opacity 0.5s ease;overflow-y:auto;}
+/* ── App layout — two fixed zones ── */
+.app {position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 16px 44px;transition:opacity 0.5s ease;overflow:hidden;}
+.timer-zone {display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
+.bottom-zone {display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:100%;}
 
 /* ── Hide-UI mode: hides all UI, only bg remains ── */
 body.hide-ui .app,
@@ -66,11 +68,11 @@ body.hide-ui .daily-stats {opacity:0 !important;pointer-events:none !important;}
    MAIN SCREEN — uses --fs for scaling
    Step 1=1x  2=1.3x  3=1.65x  4=2.05x  5=2.5x
    ───────────────────────────────────────────── */
-.mode-tabs {display:flex;gap:4px;border-radius:14px;padding:4px;margin-bottom:22px;}
-.mode-tab {background:none;border:none;color:var(--text-secondary);font-family:var(--font-body);font-size:calc(12px * var(--fs));font-weight:400;padding:8px 18px;border-radius:10px;cursor:pointer;transition:all 0.35s;white-space:nowrap;}
+.mode-tabs {display:flex;gap:4px;border-radius:14px;padding:3px;margin-bottom:14px;}
+.mode-tab {background:none;border:none;color:var(--text-secondary);font-family:var(--font-body);font-size:calc(11px * var(--fs));font-weight:400;padding:6px 14px;border-radius:10px;cursor:pointer;transition:all 0.35s;white-space:nowrap;}
 .mode-tab.active {background:var(--bg-secondary);color:var(--text-primary);font-weight:500;}
 
-.timer-container {position:relative;width:var(--timer-actual);height:var(--timer-actual);margin-bottom:22px;}
+.timer-container {position:relative;width:var(--timer-actual);height:var(--timer-actual);margin-bottom:14px;}
 .timer-ring {position:absolute;inset:0;}
 .timer-ring svg {width:100%;height:100%;transform:rotate(-90deg);}
 .timer-ring-bg {fill:none;stroke:var(--bg-secondary);stroke-width:3;}
@@ -85,42 +87,74 @@ body.hide-ui .daily-stats {opacity:0 !important;pointer-events:none !important;}
 .timer-time.countdown {animation:countPop 0.4s ease-out;color:var(--accent);}
 @keyframes countPop {0%{transform:scale(1.4);opacity:0.5} 100%{transform:scale(1);opacity:1}}
 
-.start-btn {background:none;border:1.5px solid var(--text-secondary);color:var(--text-primary);font-family:var(--font-body);font-size:calc(14px * var(--fs));font-weight:400;letter-spacing:4px;text-transform:uppercase;padding:13px 44px;border-radius:50px;cursor:pointer;transition:all 0.4s;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
+.start-btn {background:none;border:1.5px solid var(--text-secondary);color:var(--text-primary);font-family:var(--font-body);font-size:calc(12px * var(--fs));font-weight:400;letter-spacing:3px;text-transform:uppercase;padding:10px 36px;border-radius:50px;cursor:pointer;transition:all 0.4s;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
 .start-btn:hover {border-color:var(--accent);color:var(--accent);box-shadow:0 0 30px var(--accent-glow);transform:translateY(-1px);}
 .start-btn:active {transform:translateY(0) scale(0.98);}
-.btn-row {display:flex;align-items:center;gap:12px;margin-bottom:18px;}
-.stop-btn {background:none;border:1.5px solid transparent;color:var(--text-secondary);font-family:var(--font-body);font-size:calc(12px * var(--fs));font-weight:400;letter-spacing:3px;text-transform:uppercase;padding:13px 22px;border-radius:50px;cursor:pointer;transition:all 0.4s;display:none;}
+.btn-row {display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.stop-btn {background:none;border:1.5px solid transparent;color:var(--text-secondary);font-family:var(--font-body);font-size:calc(11px * var(--fs));font-weight:400;letter-spacing:2px;text-transform:uppercase;padding:10px 18px;border-radius:50px;cursor:pointer;transition:all 0.4s;display:none;}
 .stop-btn.visible {display:block;}
 .stop-btn:hover {border-color:rgba(255,100,100,0.5);color:rgba(255,120,120,0.9);transform:translateY(-1px);}
 .stop-btn:active {transform:translateY(0) scale(0.98);}
 
-.sound-control {display:flex;align-items:center;gap:8px;border-radius:12px;padding:7px 12px;margin-bottom:14px;}
-.sound-icon {width:16px;height:16px;color:var(--text-secondary);flex-shrink:0;}
-.sound-select {background:none;border:none;color:var(--text-secondary);font-family:var(--font-body);font-size:calc(11px * var(--fs));cursor:pointer;appearance:none;-webkit-appearance:none;padding-right:14px;outline:none;}
+.sound-control {display:none;} /* hidden from main UI */
+.sound-panel-row {display:flex;align-items:center;gap:12px;background:var(--bg-secondary);border-radius:12px;padding:10px 14px;}
+.sound-select {flex:1;background:none;border:none;color:var(--text-primary);font-family:var(--font-body);font-size:13px;cursor:pointer;appearance:none;-webkit-appearance:none;outline:none;}
 .sound-select option {background:var(--bg-primary);color:var(--text-primary);}
-.sound-vol {-webkit-appearance:none;appearance:none;width:50px;height:3px;background:var(--bg-secondary);border-radius:2px;outline:none;cursor:pointer;}
+.sound-vol {-webkit-appearance:none;appearance:none;width:80px;height:3px;background:var(--bg-primary);border-radius:2px;outline:none;cursor:pointer;flex-shrink:0;}
 .sound-vol::-webkit-slider-thumb {-webkit-appearance:none;width:12px;height:12px;background:var(--accent);border-radius:50%;cursor:pointer;}
+/* Task summary button — looks clickable */
+.task-summary-btn {background:var(--bg-secondary);border:1px solid var(--bg-secondary);color:var(--text-secondary);font-family:var(--font-body);font-size:calc(11px * var(--fs));font-weight:400;letter-spacing:2px;text-transform:uppercase;cursor:pointer;padding:7px 18px;border-radius:20px;transition:all 0.3s;display:flex;align-items:center;gap:8px;}
+.task-summary-btn::before {content:'☰';font-size:calc(12px * var(--fs));opacity:0.7;}
+.task-summary-btn:hover {border-color:var(--accent);color:var(--accent);}
 
-.todo-section {width:min(320px,85vw);}
+.todo-section {width:min(420px,90vw);}
 .todo-header {display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
 .todo-title {font-size:calc(11px * var(--fs));font-weight:400;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);}
 .todo-add-btn {background:none;border:none;color:var(--text-secondary);font-size:calc(18px * var(--fs));cursor:pointer;padding:0 4px;transition:color 0.3s;line-height:1;}
 .todo-add-btn:hover {color:var(--accent);}
-.todo-list {display:flex;flex-direction:column;gap:4px;max-height:160px;overflow-y:auto;}
-.todo-list::-webkit-scrollbar {width:0;}
-.todo-item {display:flex;align-items:center;gap:10px;border-radius:10px;padding:9px 12px;transition:all 0.3s;animation:slideIn 0.3s ease;}
+.todo-list {display:flex;flex-direction:column;gap:4px;max-height:340px;overflow-y:scroll;}
+.todo-list::-webkit-scrollbar {width:4px;}
+.todo-list::-webkit-scrollbar-track {background:transparent;}
+.todo-list::-webkit-scrollbar-thumb {background:var(--text-secondary);border-radius:2px;}
+.todo-list::-webkit-scrollbar-thumb:hover {background:var(--accent);}
+.todo-item {display:flex;align-items:center;gap:10px;border-radius:10px;padding:9px 12px;transition:all 0.2s;animation:slideIn 0.3s ease;}
+.todo-item.drag-over {border:1px dashed var(--accent);background:rgba(255,255,255,0.05);}
+.todo-drag {color:var(--text-secondary);opacity:0.35;cursor:grab;font-size:14px;flex-shrink:0;user-select:none;line-height:1;}
+.todo-drag:active {cursor:grabbing;}
 @keyframes slideIn {from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)}}
 .todo-check {width:16px;height:16px;border-radius:50%;border:1.5px solid var(--text-secondary);background:none;cursor:pointer;transition:all 0.3s;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0;}
 .todo-check.done {border-color:var(--accent);background:var(--accent);}
 .todo-check.done::after {content:'✓';font-size:9px;color:var(--bg-primary);}
-.todo-text {flex:1;background:none;border:none;color:var(--text-primary);font-family:var(--font-body);font-size:calc(13px * var(--fs));outline:none;min-width:0;}
+.todo-text {flex:1;background:none;border:none;color:var(--text-primary);font-family:var(--font-body);font-size:13px;outline:none;min-width:0;}
 .todo-text::placeholder {color:var(--text-secondary);}
 .todo-text.done {text-decoration:line-through;color:var(--text-secondary);}
-.todo-delete {background:none;border:none;color:var(--text-secondary);font-size:calc(14px * var(--fs));cursor:pointer;padding:0 2px;opacity:0;transition:all 0.3s;line-height:1;}
+.todo-delete {background:none;border:none;color:var(--text-secondary);font-size:14px;cursor:pointer;padding:0 2px;opacity:0;transition:all 0.3s;line-height:1;}
 .todo-item:hover .todo-delete {opacity:1;}
 .todo-delete:hover {color:var(--accent);}
+/* Task summary button in main UI */
+.task-summary-btn {background:none;border:none;color:var(--text-secondary);font-family:var(--font-body);font-size:calc(11px * var(--fs));font-weight:400;letter-spacing:2px;text-transform:uppercase;cursor:pointer;padding:4px 8px;border-radius:8px;transition:all 0.3s;}
+.task-summary-btn:hover {color:var(--accent);}
+/* Todo popup panel — centered */
+.todo-overlay {position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.12);backdrop-filter:blur(1px);-webkit-backdrop-filter:blur(1px);opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.todo-overlay.open {opacity:1;pointer-events:all;}
+.todo-panel {position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.95);z-index:501;width:min(520px,94vw);height:500px;background:var(--bg-primary);border:1px solid var(--bg-secondary);border-radius:20px;padding:26px 22px;opacity:0;pointer-events:none;transition:transform 0.3s,opacity 0.3s;display:flex;flex-direction:column;}
+.todo-panel.open {opacity:1;pointer-events:all;transform:translate(-50%,-50%) scale(1);}
+.todo-text {flex:1;background:none;border:none;color:var(--text-primary);font-family:var(--font-body);font-size:calc(13px * var(--fs));outline:none;min-width:0;}
+.todo-delete {background:none;border:none;color:var(--text-secondary);font-size:calc(14px * var(--fs));cursor:pointer;padding:0 2px;opacity:0;transition:all 0.3s;line-height:1;}
 
-.daily-stats {position:fixed;bottom:14px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;transition:opacity 0.5s ease;}
+.daily-stats {position:fixed;bottom:14px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;transition:opacity 0.5s ease;z-index:20;}
+.contact-link {font-size:10px;color:var(--text-secondary);opacity:0.4;letter-spacing:1.5px;text-decoration:none;transition:opacity 0.3s;margin-top:2px;cursor:pointer;background:none;border:none;font-family:var(--font-body);}
+.contact-link:hover {opacity:0.9;}
+.feedback-overlay {position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.25);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.feedback-overlay.open {opacity:1;pointer-events:all;}
+.feedback-panel {position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.95);z-index:501;width:min(360px,92vw);background:var(--bg-primary);border:1px solid var(--bg-secondary);border-radius:20px;padding:26px 22px;opacity:0;pointer-events:none;transition:transform 0.3s,opacity 0.3s;}
+.feedback-panel.open {opacity:1;pointer-events:all;transform:translate(-50%,-50%) scale(1);}
+.feedback-textarea {width:100%;background:var(--bg-secondary);border:1px solid transparent;border-radius:12px;padding:12px;color:var(--text-primary);font-family:var(--font-body);font-size:13px;resize:none;outline:none;transition:border-color 0.3s;line-height:1.6;margin-top:4px;}
+.feedback-textarea:focus {border-color:var(--accent);}
+.feedback-textarea::placeholder {color:var(--text-secondary);}
+.feedback-send {width:100%;padding:11px 0;border-radius:12px;border:none;background:var(--accent);color:var(--bg-primary);font-family:var(--font-body);font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;margin-top:12px;}
+.feedback-send:hover {opacity:0.85;transform:translateY(-1px);}
+.feedback-send:disabled {opacity:0.4;cursor:not-allowed;transform:none;}
 .pomo-dots {display:flex;gap:6px;}
 .pomo-dot {width:8px;height:8px;border-radius:50%;background:var(--bg-secondary);transition:all 0.4s;}
 .pomo-dot.filled {background:var(--accent);box-shadow:0 0 8px var(--accent-glow);}
@@ -295,11 +329,11 @@ body.hide-ui .daily-stats {opacity:0 !important;pointer-events:none !important;}
   </div>
 </div>
 
-<!-- Viewer settings panel -->
+<!-- Viewer + Sound settings panel -->
 <div class="overlay" id="viewerOverlay"></div>
 <div class="panel" id="viewerPanel">
   <button class="panel-close" id="viewerClose">×</button>
-  <div class="panel-title" data-i18n="viewerTitle">뷰어 설정</div>
+  <div class="panel-title" data-i18n="viewerTitle">뷰어 & 사운드</div>
 
   <div class="s-group">
     <div class="s-label" data-i18n="colorLabel">색상</div>
@@ -323,6 +357,21 @@ body.hide-ui .daily-stats {opacity:0 !important;pointer-events:none !important;}
       <div class="fs-pip-row" id="fsPips">
         <div class="fs-pip"></div><div class="fs-pip"></div><div class="fs-pip"></div><div class="fs-pip"></div><div class="fs-pip"></div>
       </div>
+    </div>
+  </div>
+
+  <div class="s-group">
+    <div class="s-label" data-i18n="soundLabel">소리</div>
+    <div class="sound-panel-row">
+      <select class="sound-select" id="soundSelect">
+        <option value="none" data-i18n-opt="soundNone">무음</option>
+        <option value="rain" data-i18n-opt="soundRain">빗소리</option>
+        <option value="cafe" data-i18n-opt="soundCafe">카페</option>
+        <option value="fire" data-i18n-opt="soundFire">모닥불</option>
+        <option value="wave" data-i18n-opt="soundWave">파도</option>
+        <option value="wind" data-i18n-opt="soundWind">바람</option>
+      </select>
+      <input type="range" class="sound-vol" id="soundVol" min="0" max="100" value="40">
     </div>
   </div>
 
@@ -371,13 +420,12 @@ body.hide-ui .daily-stats {opacity:0 !important;pointer-events:none !important;}
     <button class="lang-btn" data-lang="zh">中文</button>
   </div>
   <div class="top-right">
-    <!-- Viewer settings button -->
-    <button class="icon-btn glass" id="viewerBtn" title="뷰어 설정">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"/>
-        <circle cx="8" cy="13" r="1.5" fill="currentColor" stroke="none"/>
-        <circle cx="16" cy="13" r="1.5" fill="currentColor" stroke="none"/>
-        <circle cx="12" cy="8.5" r="1.5" fill="currentColor" stroke="none"/>
+    <!-- Viewer+Sound settings button -->
+    <button class="icon-btn glass" id="viewerBtn" title="뷰어 & 사운드 설정">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <line x1="4" y1="6" x2="20" y2="6"/><circle cx="8" cy="6" r="2" fill="currentColor" stroke="none"/>
+        <line x1="4" y1="12" x2="20" y2="12"/><circle cx="16" cy="12" r="2" fill="currentColor" stroke="none"/>
+        <line x1="4" y1="18" x2="20" y2="18"/><circle cx="10" cy="18" r="2" fill="currentColor" stroke="none"/>
       </svg>
     </button>
     <button class="icon-btn glass" id="settingsBtn">
@@ -388,45 +436,56 @@ body.hide-ui .daily-stats {opacity:0 !important;pointer-events:none !important;}
 </div>
 
 <div class="app">
-  <div class="mode-tabs glass">
-    <button class="mode-tab active" data-mode="focus" data-i18n="focus">집중</button>
-    <button class="mode-tab" data-mode="break" data-i18n="breakTab">휴식</button>
-  </div>
-  <div class="timer-container" id="timerContainer">
-    <div class="timer-ring"><svg viewBox="0 0 320 320"><circle class="timer-ring-bg" cx="160" cy="160" r="150"/><circle class="timer-ring-progress" id="ringProgress" cx="160" cy="160" r="150" stroke-dasharray="942.48" stroke-dashoffset="0"/></svg></div>
-    <div class="timer-display" id="timerDisplay"><div class="timer-time" id="timerTime">25:00</div><div class="timer-label" id="timerLabel" data-i18n="ready">준비</div></div>
-    <div class="timer-edit-wrap" id="timerEditWrap">
-      <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
-        <div class="timer-edit-inner" id="timerEditInner"></div>
-        <div class="timer-edit-hint" id="timerEditHint">tap to edit</div>
+  <div class="timer-zone">
+    <div class="mode-tabs glass">
+      <button class="mode-tab active" data-mode="focus" data-i18n="focus">집중</button>
+      <button class="mode-tab" data-mode="break" data-i18n="breakTab">휴식</button>
+    </div>
+    <div class="timer-container" id="timerContainer">
+      <div class="timer-ring"><svg viewBox="0 0 320 320"><circle class="timer-ring-bg" cx="160" cy="160" r="150"/><circle class="timer-ring-progress" id="ringProgress" cx="160" cy="160" r="150" stroke-dasharray="942.48" stroke-dashoffset="0"/></svg></div>
+      <div class="timer-display" id="timerDisplay"><div class="timer-time" id="timerTime">25:00</div><div class="timer-label" id="timerLabel" data-i18n="ready">준비</div></div>
+      <div class="timer-edit-wrap" id="timerEditWrap">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <div class="timer-edit-inner" id="timerEditInner"></div>
+          <div class="timer-edit-hint" id="timerEditHint">tap to edit</div>
+        </div>
       </div>
     </div>
   </div>
-  <div class="btn-row">
-    <button class="start-btn" id="startBtn" data-i18n="start">시작</button>
-    <button class="stop-btn" id="stopBtn" data-i18n="stop">종료</button>
+  <div class="bottom-zone">
+    <div class="btn-row">
+      <button class="start-btn" id="startBtn" data-i18n="start">시작</button>
+      <button class="stop-btn" id="stopBtn" data-i18n="stop">종료</button>
+    </div>
+    <button class="task-summary-btn" id="taskSummaryBtn">TASKS (0)</button>
   </div>
-  <div class="sound-control glass">
-    <svg class="sound-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V6l7-3v18l-7-3z"/><path d="M9 12H4m0-3v6"/></svg>
-    <select class="sound-select" id="soundSelect">
-      <option value="none" data-i18n-opt="soundNone">무음</option>
-      <option value="rain" data-i18n-opt="soundRain">빗소리</option>
-      <option value="cafe" data-i18n-opt="soundCafe">카페</option>
-      <option value="fire" data-i18n-opt="soundFire">모닥불</option>
-      <option value="wave" data-i18n-opt="soundWave">파도</option>
-      <option value="wind" data-i18n-opt="soundWind">바람</option>
-    </select>
-    <input type="range" class="sound-vol" id="soundVol" min="0" max="100" value="40">
+</div>
+
+<!-- Todo popup -->
+<div class="todo-overlay" id="todoOverlay"></div>
+<div class="todo-panel" id="todoPanel">
+  <button class="panel-close" id="todoPanelClose">×</button>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+    <div class="panel-title" style="margin-bottom:0;" data-i18n="tasks">할 일</div>
+    <button class="todo-add-btn" id="todoAddBtn" style="font-size:22px;">+</button>
   </div>
-  <div class="todo-section">
-    <div class="todo-header"><div class="todo-title" data-i18n="tasks">할 일</div><button class="todo-add-btn" id="todoAddBtn">+</button></div>
-    <div class="todo-list" id="todoList"></div>
-  </div>
+  <div class="todo-list" id="todoList" style="flex:1;"></div>
 </div>
 
 <div class="daily-stats">
   <div class="pomo-dots" id="pomoDots"><div class="pomo-dot"></div><div class="pomo-dot"></div><div class="pomo-dot"></div><div class="pomo-dot"></div><div class="pomo-dot"></div></div>
   <div class="stats-text"><span>🍅 <em id="pomoCountText">0</em></span><span>⏱ <em id="totalTimeText">0h 0m</em></span></div>
+  <a class="contact-link" id="feedbackBtn">✉ feedback</a>
+</div>
+
+<!-- Feedback modal -->
+<div class="feedback-overlay" id="feedbackOverlay"></div>
+<div class="feedback-panel" id="feedbackPanel">
+  <button class="panel-close" id="feedbackClose">×</button>
+  <div class="panel-title" data-i18n="feedbackTitle">피드백</div>
+  <div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;" data-i18n="feedbackDesc">사용하면서 불편한 점이나 개선 아이디어를 알려주세요 :)</div>
+  <textarea class="feedback-textarea" id="feedbackText" rows="5" placeholder="메시지를 입력해주세요..."></textarea>
+  <button class="feedback-send" id="feedbackSend" data-i18n="feedbackSend">전송</button>
 </div>
 
 <script>
@@ -443,8 +502,9 @@ const i18n={
     settings:'설정',timerSettings:'기본 타이머',optionsLabel:'옵션',autoStart:'자동 시작',alarmSound:'알람',resetDefault:'기본값',
     continueTitle:'계속 하시겠습니까?',continueKeep:'계속하기',continueStop:'종료',
     helpTitle:'사용 방법',
-    viewerTitle:'뷰어 설정',colorLabel:'색상',fontSizeLabel:'글씨 크기',screenLabel:'화면',
-    fullscreenBtn:'⛶ 전체화면',hideUiBtn:'⊘ 숫자 가리기',viewerDefault:'기본값',autoHideLabel:'시작 시 자동 가리기'
+    viewerTitle:'뷰어 & 사운드',colorLabel:'색상',fontSizeLabel:'글씨 크기',screenLabel:'화면',soundLabel:'소리',
+    fullscreenBtn:'⛶ 전체화면',hideUiBtn:'⊘ 숫자 가리기',viewerDefault:'기본값',autoHideLabel:'시작 시 자동 가리기',
+    feedbackTitle:'피드백',feedbackDesc:'사용하면서 불편한 점이나 개선 아이디어를 알려주세요 :)',feedbackSend:'전송',feedbackPH:'메시지를 입력해주세요...',feedbackDone:'전송되었습니다. 감사합니다!'
   },
   en:{
     focus:'Focus',breakTab:'Break',start:'Start',pause:'Pause',resume:'Resume',cancel:'Cancel',stop:'Stop',
@@ -455,8 +515,9 @@ const i18n={
     settings:'Settings',timerSettings:'Default Timer',optionsLabel:'Options',autoStart:'Auto Start',alarmSound:'Alarm',resetDefault:'Default',
     continueTitle:'Keep going?',continueKeep:'Continue',continueStop:'Stop',
     helpTitle:'How to Use',
-    viewerTitle:'Viewer',colorLabel:'Color',fontSizeLabel:'Text Size',screenLabel:'Screen',
-    fullscreenBtn:'⛶ Fullscreen',hideUiBtn:'⊘ Hide Numbers',viewerDefault:'Default',autoHideLabel:'Auto-hide on start'
+    viewerTitle:'Viewer & Sound',colorLabel:'Color',fontSizeLabel:'Text Size',screenLabel:'Screen',soundLabel:'Sound',
+    fullscreenBtn:'⛶ Fullscreen',hideUiBtn:'⊘ Hide Numbers',viewerDefault:'Default',autoHideLabel:'Auto-hide on start',
+    feedbackTitle:'Feedback',feedbackDesc:'Share any issues or ideas for improvement :)',feedbackSend:'Send',feedbackPH:'Enter your message...',feedbackDone:'Sent! Thank you!'
   },
   zh:{
     focus:'专注',breakTab:'休息',start:'开始',pause:'暂停',resume:'继续',cancel:'取消',stop:'结束',
@@ -467,8 +528,9 @@ const i18n={
     settings:'设置',timerSettings:'默认计时器',optionsLabel:'选项',autoStart:'自动开始',alarmSound:'闹钟',resetDefault:'默认值',
     continueTitle:'继续吗？',continueKeep:'继续',continueStop:'结束',
     helpTitle:'使用说明',
-    viewerTitle:'视图设置',colorLabel:'颜色',fontSizeLabel:'字体大小',screenLabel:'屏幕',
-    fullscreenBtn:'⛶ 全屏',hideUiBtn:'⊘ 隐藏数字',viewerDefault:'默认值',autoHideLabel:'开始时自动隐藏'
+    viewerTitle:'视图 & 声音',colorLabel:'颜色',fontSizeLabel:'字体大小',screenLabel:'屏幕',soundLabel:'声音',
+    fullscreenBtn:'⛶ 全屏',hideUiBtn:'⊘ 隐藏数字',viewerDefault:'默认值',autoHideLabel:'开始时自动隐藏',
+    feedbackTitle:'反馈',feedbackDesc:'请告诉我们使用中的问题或改进建议 :)',feedbackSend:'发送',feedbackPH:'请输入您的消息...',feedbackDone:'已发送！谢谢！'
   }
 };
 
@@ -695,13 +757,17 @@ function go(){
   if(paused){
     paused=false;running=true;$start.textContent=t('pause');resumeBgSound();
     resetTickRef();startRaf();
-    intv=setInterval(tick,1000);updStopBtn();return;
+    intv=setInterval(tick,1000);updStopBtn();
+    if(autoHideOn)hideUI(); // re-hide on resume if auto-hide is on
+    return;
   }
   if(running){
     paused=true;running=false;clearInterval(intv);stopRaf();
     $start.textContent=t('resume');pauseBgSound();
     document.title=overTime?`⏸ +${fmt(overSec)}`:`⏸ ${fmt(left)}`;
-    updStopBtn();return;
+    updStopBtn();
+    revealUI(); // always show UI when paused
+    return;
   }
   showRunningDisplay();
   startCountdown(()=>{
@@ -761,11 +827,23 @@ function dayKey(){return'pomo-'+new Date().toISOString().slice(0,10);}
 function saveDay(){localStorage.setItem(dayKey(),JSON.stringify({c:pCount,s:focusSec}));}
 function loadDay(){const d=localStorage.getItem(dayKey());if(d){const p=JSON.parse(d);pCount=p.c||0;focusSec=p.s||0;}updDots();updStats();}
 
+function updTaskSummary(){
+  const total=todos.length;
+  const btn=document.getElementById('taskSummaryBtn');
+  if(btn)btn.textContent=total>0?`TASKS (${total})`:'TASKS';
+}
 function renderTodos(){
   const el=document.getElementById('todoList');el.innerHTML='';
-  todos.forEach((td,i)=>{const d=document.createElement('div');d.className='todo-item glass';
-    d.innerHTML=`<button class="todo-check ${td.done?'done':''}" data-i="${i}"></button><input class="todo-text ${td.done?'done':''}" value="${td.text.replace(/"/g,'&quot;')}" placeholder="${t('taskPH')}" data-i="${i}"><button class="todo-delete" data-i="${i}">×</button>`;
-    el.appendChild(d);});saveTodos();
+  todos.forEach((td,i)=>{
+    const d=document.createElement('div');
+    d.className='todo-item glass';
+    d.draggable=true;
+    d.dataset.i=i;
+    d.innerHTML=`<span class="todo-drag" data-i="${i}">⠿</span><button class="todo-check ${td.done?'done':''}" data-i="${i}"></button><input class="todo-text ${td.done?'done':''}" value="${td.text.replace(/"/g,'&quot;')}" placeholder="${t('taskPH')}" data-i="${i}"><button class="todo-delete" data-i="${i}">×</button>`;
+    el.appendChild(d);
+  });
+  saveTodos();updTaskSummary();
+  initDrag();
 }
 function saveTodos(){localStorage.setItem('pomo-todos',JSON.stringify(todos));}
 function loadTodos(){const d=localStorage.getItem('pomo-todos');if(d)todos=JSON.parse(d);renderTodos();}
@@ -778,9 +856,46 @@ document.getElementById('todoList').addEventListener('input',e=>{
   if(e.target.classList.contains('todo-text')){const i=+e.target.dataset.i;if(!isNaN(i)){todos[i].text=e.target.value;saveTodos();}}
 });
 document.getElementById('todoAddBtn').addEventListener('click',()=>{
-  if(todos.length>=5)return;todos.push({text:'',done:false});renderTodos();
+  if(todos.length>=10)return;todos.push({text:'',done:false});renderTodos();
   const ins=document.querySelectorAll('.todo-text');ins[ins.length-1]?.focus();
 });
+
+// ── Drag-and-drop reorder ──
+let dragSrc=null;
+function initDrag(){
+  document.querySelectorAll('.todo-item').forEach(item=>{
+    item.addEventListener('dragstart',e=>{
+      dragSrc=item;item.style.opacity='0.4';
+      e.dataTransfer.effectAllowed='move';
+    });
+    item.addEventListener('dragend',e=>{
+      item.style.opacity='';
+      document.querySelectorAll('.todo-item').forEach(i=>i.classList.remove('drag-over'));
+    });
+    item.addEventListener('dragover',e=>{
+      e.preventDefault();e.dataTransfer.dropEffect='move';
+      item.classList.add('drag-over');
+    });
+    item.addEventListener('dragleave',()=>item.classList.remove('drag-over'));
+    item.addEventListener('drop',e=>{
+      e.preventDefault();
+      if(dragSrc===item)return;
+      const from=+dragSrc.dataset.i, to=+item.dataset.i;
+      const moved=todos.splice(from,1)[0];
+      todos.splice(to,0,moved);
+      renderTodos();
+    });
+  });
+}
+
+// ── Todo popup ──
+const $todoOverlay=document.getElementById('todoOverlay');
+const $todoPanel=document.getElementById('todoPanel');
+function openTodoPanel(){$todoOverlay.classList.add('open');$todoPanel.classList.add('open');}
+function closeTodoPanel(){$todoOverlay.classList.remove('open');$todoPanel.classList.remove('open');}
+document.getElementById('taskSummaryBtn').addEventListener('click',openTodoPanel);
+document.getElementById('todoPanelClose').addEventListener('click',closeTodoPanel);
+$todoOverlay.addEventListener('click',closeTodoPanel);
 
 // ═══════════════════════════════════════════════
 // Audio
@@ -827,6 +942,38 @@ const $helpOverlay=document.getElementById('helpOverlay'),$helpPanel=document.ge
 document.getElementById('helpBtn').addEventListener('click',()=>{buildHelpContent();$helpOverlay.classList.add('open');$helpPanel.classList.add('open');});
 document.getElementById('helpClose').addEventListener('click',()=>{$helpOverlay.classList.remove('open');$helpPanel.classList.remove('open');});
 $helpOverlay.addEventListener('click',()=>{$helpOverlay.classList.remove('open');$helpPanel.classList.remove('open');});
+
+// ── Feedback modal ──
+const $fbOverlay=document.getElementById('feedbackOverlay');
+const $fbPanel=document.getElementById('feedbackPanel');
+function openFeedback(){
+  document.getElementById('feedbackText').value='';
+  document.getElementById('feedbackSend').textContent=t('feedbackSend');
+  document.getElementById('feedbackSend').disabled=false;
+  document.getElementById('feedbackText').placeholder=t('feedbackPH');
+  $fbOverlay.classList.add('open');$fbPanel.classList.add('open');
+}
+function closeFeedback(){$fbOverlay.classList.remove('open');$fbPanel.classList.remove('open');}
+document.getElementById('feedbackBtn').addEventListener('click',openFeedback);
+document.getElementById('feedbackClose').addEventListener('click',closeFeedback);
+$fbOverlay.addEventListener('click',closeFeedback);
+document.getElementById('feedbackSend').addEventListener('click',async()=>{
+  const msg=document.getElementById('feedbackText').value.trim();
+  if(!msg)return;
+  const btn=document.getElementById('feedbackSend');
+  btn.disabled=true;btn.textContent='...';
+  try{
+    const url='https://script.google.com/macros/s/AKfycbz2q9S8CHnqjLUAc1wPjFE5V5u6VJxjp2GnpGnPxSw6Uy--MXAEqydOE_6SwzVcXnLI/exec'
+      +'?subject='+encodeURIComponent('새 피드백')
+      +'&message='+encodeURIComponent(msg);
+    await fetch(url,{method:'GET',mode:'no-cors'});
+    btn.textContent=t('feedbackDone');
+    setTimeout(closeFeedback,1800);
+  }catch(err){
+    btn.textContent='오류가 발생했어요. 다시 시도해주세요.';
+    btn.disabled=false;
+  }
+});
 
 // ═══════════════════════════════════════════════
 // Settings panel
@@ -875,19 +1022,19 @@ const FS_SCALES=[1.0, 1.3, 1.65, 2.05, 2.5];
 let currentFs=3;
 
 function calcRingSize(){
-  // Ring size is ALWAYS FIXED — never changes with font scale
-  // Computed from viewport with fixed (non-scaled) UI heights
+  // Ring size FIXED — measure actual bottom-zone height for accuracy
   const W=window.innerWidth, H=window.innerHeight;
-  const topBar   = 56;   // fixed top bar height
-  const modeTabs = 62;   // mode tabs + margin (fixed)
-  const btnRow   = 70;   // buttons + margin (fixed)
-  const sound    = 54;   // sound control + margin (fixed)
-  const todo     = 60;   // todo section header
-  const stats    = 50;   // bottom stats
-  const padding  = 120;  // app padding top+bottom
-  const reserved = topBar + modeTabs + btnRow + sound + todo + stats + padding;
-  const availH   = Math.max(120, H - reserved);
-  const availW   = W * 0.90;
+  const topBar  = 52;  // top bar
+  const tabRow  = 46;  // mode tabs + margin
+  const ringMb  = 14;  // timer margin-bottom
+  const btnRow  = 44;  // btn-row + margin
+  const sound   = 38;  // sound control + margin
+  const todoHdr = 36;  // todo header only (list scrolls)
+  const stats   = 46;  // bottom stats
+  const pad     = 56+44; // app top+bottom padding
+  const reserved = topBar + tabRow + ringMb + btnRow + sound + todoHdr + stats + pad;
+  const availH  = Math.max(100, H - reserved);
+  const availW  = W * 0.86;
   return Math.round(Math.min(availH, availW));
 }
 
@@ -1021,10 +1168,10 @@ function saveModes(){const f=Math.round(MODES.focus/60),b=Math.round(MODES.break
 // ═══════════════════════════════════════════════
 // Keyboard shortcuts
 // ═══════════════════════════════════════════════
-$start.addEventListener('click',()=>{reqNotif();go();});
+$start.addEventListener('click',()=>{go();});
 document.addEventListener('keydown',e=>{
   if(['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName))return;
-  if(e.code==='Space'){e.preventDefault();reqNotif();go();}
+  if(e.code==='Space'){e.preventDefault();go();}
   else if(e.key==='f'||e.key==='F'){e.preventDefault();toggleFullscreen();}
   else if(e.key==='h'||e.key==='H'){e.preventDefault();toggleHideUI();}
 });
@@ -1080,6 +1227,7 @@ window.addEventListener('resize',()=>{
   $toggleAutoHide.classList.toggle('on',autoHideOn);
 
   loadDay();loadTodos();mkParticles();updDisp();updateUI();buildEditUI();
+  reqNotif(); // request notification permission once on load
 })();
 </script>
 </body>
