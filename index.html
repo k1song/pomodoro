@@ -1219,7 +1219,7 @@ document.getElementById('feedbackSend').addEventListener('click',async()=>{
   const btn=document.getElementById('feedbackSend');
   btn.disabled=true;btn.textContent='...';
   try{
-    const url='https://script.google.com/macros/s/AKfycbz2q9S8CHnqjLUAc1wPjFE5V5u6VJxjp2GnpGnPxSw6Uy--MXAEqydOE_6SwzVcXnLI/exec'
+    const url='https://script.google.com/macros/s/AKfycbynwBdxGSBSjcGJ1VIU151r_o7eeXlzsSUG6XBmZiKTwtiVJG0oAqVw5ifc0ynZSSp7/exec'
       +'?subject='+encodeURIComponent('새 피드백')
       +'&message='+encodeURIComponent(msg);
     await fetch(url,{method:'GET',mode:'no-cors'});
