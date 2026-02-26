@@ -722,36 +722,81 @@ const i18n={
 // Help content
 // ═══════════════════════════════════════════════
 const HELP={
+  en:[
+    {sec:'Timer',items:[
+      {i:'⏱',t:'Switch modes with the <b>Focus / Break</b> tabs at the top.'},
+      {i:'✏️',t:'Before starting, click the timer numbers or use ▲▼ buttons to adjust the time. Entering 60+ in MIN automatically converts to HR/MIN.'},
+      {i:'▶️',t:'Press <b>Start</b> — a 5-second countdown begins, then the session starts.'},
+      {i:'⏸',t:'While running, use <b>Pause</b> to temporarily stop, or <b>Stop</b> to end the session.'}
+    ]},
+    {sec:'After Session Ends',items:[
+      {i:'➕',t:'When time is up, an overtime counter starts: <b>+00:01, +00:02...</b> This overtime is included in today\'s focus time.'},
+      {i:'✅',t:'Press <b>Continue</b> to dismiss the alarm and keep focusing with the overtime counter running.'},
+      {i:'🔚',t:'Press <b>Stop</b> to end the session and move on to the next one.'}
+    ]},
+    {sec:'Tasks',items:[
+      {i:'📝',t:'Type a task in the input field and press <b>Add</b> or Enter. Up to 10 tasks can be added.'},
+      {i:'🎯',t:'Click a task to select it (highlighted). If a task is selected when the focus session ends, it is automatically marked as done.'},
+      {i:'✎',t:'Click the <b>✎ edit button</b> to modify a task. Press ✓ or Enter to save.'},
+      {i:'⠿',t:'Drag the <b>⠿ handle</b> on the left to reorder tasks.'},
+      {i:'×',t:'Click <b>×</b> to delete a task. A confirmation prompt will appear.'},
+      {i:'○',t:'Click the <b>circle checkbox</b> to manually mark a task as done or undone.'}
+    ]},
+    {sec:'Settings',items:[
+      {i:'⏱',t:'<b>Default Timer</b>: Set the default duration for Focus and Break sessions.'},
+      {i:'🔔',t:'<b>Alarm Notify</b>: Toggle browser pop-up notification on/off at session end.'},
+      {i:'🔊',t:'<b>Alarm Sound</b>: Toggle the 1-minute alarm sound on/off at session end.'},
+      {i:'🎵',t:'<b>Sound Type</b>: Choose your alarm sound — Gentle Bell / Tibetan Bell / Harp Arpeggio / Guitar Harmonic / Aurora.'},
+      {i:'🌐',t:'<b>Language</b>: Choose from 11 languages using the dropdown.'}
+    ]},
+    {sec:'Viewer & Sound',items:[
+      {i:'🎨',t:'<b>Color</b>: Choose from 8 themes — Lofi / Sunset / Forest / Galaxy / Yellow / Vivid / Rainbow / Dawn.'},
+      {i:'🔤',t:'<b>Text Size</b>: Adjust the timer font size in 5 steps using +/− buttons.'},
+      {i:'🎧',t:'<b>Background Sound</b>: Choose from Rain / Café / Fire / Waves / Wind. Plays continuously regardless of timer state.'},
+      {i:'🔇',t:'Click the <b>🔊 button</b> next to the volume slider to mute/unmute background sound instantly.'},
+      {i:'⛶',t:'<b>Fullscreen</b>: Enter fullscreen mode for a distraction-free experience.'},
+      {i:'⊘',t:'<b>Hide Numbers</b>: Automatically hides the timer display while running. Numbers reappear when paused.'}
+    ]},
+    {sec:'Shortcuts',items:[
+      {i:'⌨️',t:'<b>Space</b> — Start / Pause'},
+      {i:'⌨️',t:'<b>F</b> — Toggle fullscreen'},
+      {i:'⌨️',t:'<b>H</b> — Toggle hide numbers'},
+      {i:'⌨️',t:'<b>M</b> — Mute / Unmute background sound'}
+    ]}
+  ],
   ko:[
     {sec:'타이머',items:[
-      {i:'⏱',t:'<b>집중 / 휴식</b> 탭으로 모드를 전환하세요.'},
-      {i:'✏️',t:'시작 전 타이머 숫자를 클릭하거나 ▲▼ 버튼으로 시간을 바꿀 수 있어요. MIN에 60 이상 입력하면 자동으로 HR/MIN으로 변환돼요.'},
+      {i:'⏱',t:'상단 <b>집중 / 휴식</b> 탭으로 모드를 전환하세요.'},
+      {i:'✏️',t:'시작 전 타이머 숫자를 클릭하거나 ▲▼ 버튼으로 시간을 조절할 수 있어요. MIN에 60 이상 입력하면 자동으로 HR/MIN으로 변환돼요.'},
       {i:'▶️',t:'<b>시작</b>을 누르면 5초 카운트다운 후 세션이 시작돼요.'},
-      {i:'⏸',t:'실행 중 <b>일시정지</b> / <b>종료</b>로 세션을 제어할 수 있어요.'}
+      {i:'⏸',t:'실행 중 <b>일시정지</b>로 잠시 멈추거나, <b>종료</b>로 세션을 끝낼 수 있어요.'}
     ]},
     {sec:'세션 종료 후',items:[
-      {i:'➕',t:'타이머가 끝나면 초과 시간이 <b>00:01, 00:02...</b>로 카운트돼요. 초과 시간도 오늘 집중 시간에 포함돼요.'},
-      {i:'✅',t:'<b>계속하기</b>를 누르면 알람이 꺼지고 초과 시간을 유지하며 계속 집중할 수 있어요.'},
-      {i:'🔚',t:'<b>종료</b>를 누르면 다음 세션으로 넘어가요.'}
+      {i:'➕',t:'타이머가 끝나면 초과 시간이 <b>+00:01, +00:02...</b>로 카운트돼요. 초과 시간도 오늘 집중 시간에 포함돼요.'},
+      {i:'✅',t:'<b>계속하기</b>를 누르면 알람이 꺼지고 초과 시간을 유지하며 집중을 이어갈 수 있어요.'},
+      {i:'🔚',t:'<b>종료</b>를 누르면 세션이 끝나고 다음 세션으로 넘어가요.'}
     ]},
-    {sec:'할 일 (TASKS)',items:[
-      {i:'📝',t:'상단 입력란에 task를 입력하고 <b>Add</b> 버튼 또는 Enter로 추가해요. (최대 10개)'},
-      {i:'🎯',t:'항목을 클릭하면 선택돼요. 시작 전 task를 선택하면 집중 세션 완료 시 자동으로 완료 처리돼요.'},
-      {i:'✎',t:'우측 <b>✎ 수정 버튼</b>으로 내용을 편집하고, ✓ 또는 Enter로 저장해요.'},
+    {sec:'할 일 (Tasks)',items:[
+      {i:'📝',t:'입력란에 할 일을 입력하고 <b>Add</b> 버튼 또는 Enter로 추가해요. 최대 10개까지 추가할 수 있어요.'},
+      {i:'🎯',t:'항목을 클릭하면 선택(강조 표시)돼요. 선택된 task가 있으면 집중 세션 완료 시 자동으로 완료 처리돼요.'},
+      {i:'✎',t:'<b>✎ 수정 버튼</b>을 클릭해 내용을 편집하고, ✓ 또는 Enter로 저장해요.'},
       {i:'⠿',t:'왼쪽 <b>⠿ 핸들</b>을 드래그해서 순서를 바꿀 수 있어요.'},
-      {i:'×',t:'<b>×</b>를 누르면 삭제 확인 후 제거돼요.'}
+      {i:'×',t:'<b>×</b>를 클릭하면 삭제 확인 후 제거돼요.'},
+      {i:'○',t:'<b>원형 체크박스</b>를 클릭해 완료/미완료를 수동으로 전환할 수 있어요.'}
     ]},
-    {sec:'알람 설정',items:[
+    {sec:'설정',items:[
+      {i:'⏱',t:'<b>기본 타이머</b>: 집중/휴식 세션의 기본 시간을 설정해요.'},
       {i:'🔔',t:'<b>알람 알림</b>: 세션 종료 시 브라우저 팝업 알림을 on/off 해요.'},
       {i:'🔊',t:'<b>알람 소리</b>: 세션 종료 시 1분간 알람 소리를 on/off 해요.'},
-      {i:'🎵',t:'<b>소리 종류</b>: Gentle Bell / Tibetan Bell / Harp Arpeggio / Guitar Harmonic / Aurora 중 선택해요.'}
+      {i:'🎵',t:'<b>소리 종류</b>: 알람 소리를 선택해요 — Gentle Bell / Tibetan Bell / Harp Arpeggio / Guitar Harmonic / Aurora.'},
+      {i:'🌐',t:'<b>언어</b>: 드롭다운에서 11가지 언어 중 선택할 수 있어요.'}
     ]},
     {sec:'뷰어 & 사운드',items:[
-      {i:'🎨',t:'<b>색상</b>: 8가지 테마 중 선택하세요. (로파이/노을/숲/갤럭시/노랑/비비드/무지개/새벽)'},
-      {i:'🔤',t:'<b>글씨 크기</b>: +/− 버튼으로 1~5단계 조절해요.'},
-      {i:'🎧',t:'<b>배경음</b>: 빗소리/카페/모닥불/파도/바람 중 선택해요. 타이머 작동과 상관없이 항상 재생돼요.'},
-      {i:'🔇',t:'<b>🔊 버튼</b>으로 배경음을 음소거할 수 있어요.'},
-      {i:'⛶',t:'<b>전체화면</b>: 전체화면으로 전환해요.'},
+      {i:'🎨',t:'<b>색상</b>: 8가지 테마 중 선택하세요 — 로파이 / 노을 / 숲 / 갤럭시 / 노랑 / 비비드 / 무지개 / 새벽.'},
+      {i:'🔤',t:'<b>글씨 크기</b>: +/− 버튼으로 타이머 폰트 크기를 1~5단계로 조절해요.'},
+      {i:'🎧',t:'<b>배경음</b>: 빗소리 / 카페 / 모닥불 / 파도 / 바람 중 선택해요. 타이머 작동과 상관없이 항상 재생돼요.'},
+      {i:'🔇',t:'볼륨 슬라이더 옆 <b>🔊 버튼</b>으로 배경음을 즉시 음소거/해제할 수 있어요.'},
+      {i:'⛶',t:'<b>전체화면</b>: 방해 없는 집중 환경을 위해 전체화면으로 전환해요.'},
       {i:'⊘',t:'<b>숫자 가리기</b>: 타이머 실행 중 숫자를 자동으로 가려요. 일시정지 시 다시 나타나요.'}
     ]},
     {sec:'단축키',items:[
@@ -761,75 +806,81 @@ const HELP={
       {i:'⌨️',t:'<b>M</b> — 배경음 음소거 / 해제'}
     ]}
   ],
-  en:[
-    {sec:'Timer',items:[
-      {i:'⏱',t:'Switch modes with the <b>Focus / Break</b> tabs.'},
-      {i:'✏️',t:'Click the timer or use ▲▼ buttons to set time. Entering 60+ in MIN auto-converts to HR/MIN.'},
-      {i:'▶️',t:'Press <b>Start</b> — a 5-second countdown begins, then the session starts.'},
-      {i:'⏸',t:'Use <b>Pause</b> or <b>Stop</b> to control the session while running.'}
+  ja:[
+    {sec:'タイマー',items:[
+      {i:'⏱',t:'上部の<b>集中 / 休憩</b>タブでモードを切り替えてください。'},
+      {i:'✏️',t:'開始前にタイマーの数字をクリックするか、▲▼ボタンで時間を調整できます。MINに60以上入力すると自動でHR/MINに変換されます。'},
+      {i:'▶️',t:'<b>スタート</b>を押すと5秒のカウントダウン後にセッションが始まります。'},
+      {i:'⏸',t:'実行中に<b>一時停止</b>で一時停止、<b>終了</b>でセッションを終了できます。'}
     ]},
-    {sec:'After Session Ends',items:[
-      {i:'➕',t:'When time is up, an overtime counter starts at <b>00:01, 00:02...</b> Overtime is added to today\'s focus time.'},
-      {i:'✅',t:'Tap <b>Continue</b> to stop the alarm and keep going with the overtime counter running.'},
-      {i:'🔚',t:'Tap <b>Stop</b> to end and move to the next session.'}
+    {sec:'セッション終了後',items:[
+      {i:'➕',t:'タイマーが終わると超過時間が<b>+00:01, +00:02...</b>とカウントされます。超過時間も今日の集中時間に含まれます。'},
+      {i:'✅',t:'<b>続ける</b>を押すとアラームが消え、超過時間を維持しながら集中を続けられます。'},
+      {i:'🔚',t:'<b>終了</b>を押すとセッションが終わり、次のセッションに移ります。'}
     ]},
-    {sec:'Tasks',items:[
-      {i:'📝',t:'Type a task in the input and press <b>Add</b> or Enter to add it. (max 10)'},
-      {i:'🎯',t:'Click an item to select it. If a task is selected when you start, it will be marked done when the focus session ends.'},
-      {i:'✎',t:'Click the <b>✎ edit button</b> on the right to edit, then save with ✓ or Enter.'},
-      {i:'⠿',t:'Drag the <b>⠿ handle</b> on the left to reorder items.'},
-      {i:'×',t:'Press <b>×</b> to delete (confirmation required).'}
+    {sec:'タスク',items:[
+      {i:'📝',t:'入力欄にタスクを入力して<b>Add</b>またはEnterで追加します。最大10個まで追加できます。'},
+      {i:'🎯',t:'タスクをクリックすると選択（ハイライト）されます。集中セッション終了時に選択中のタスクが自動的に完了になります。'},
+      {i:'✎',t:'<b>✎ 編集ボタン</b>をクリックして内容を編集し、✓またはEnterで保存します。'},
+      {i:'⠿',t:'左側の<b>⠿ ハンドル</b>をドラッグして順序を変更できます。'},
+      {i:'×',t:'<b>×</b>をクリックすると確認後に削除されます。'},
+      {i:'○',t:'<b>丸いチェックボックス</b>をクリックして完了/未完了を手動で切り替えられます。'}
     ]},
-    {sec:'Alarm Settings',items:[
-      {i:'🔔',t:'<b>Alarm Notify</b>: Toggle browser notification on/off at session end.'},
-      {i:'🔊',t:'<b>Alarm Sound</b>: Toggle 1-minute alarm sound on/off at session end.'},
-      {i:'🎵',t:'<b>Sound Type</b>: Choose from Gentle Bell / Tibetan Bell / Harp Arpeggio / Guitar Harmonic / Aurora.'}
+    {sec:'設定',items:[
+      {i:'⏱',t:'<b>デフォルトタイマー</b>: 集中/休憩セッションのデフォルト時間を設定します。'},
+      {i:'🔔',t:'<b>アラーム通知</b>: セッション終了時のブラウザ通知をon/offします。'},
+      {i:'🔊',t:'<b>アラーム音</b>: セッション終了時の1分間のアラーム音をon/offします。'},
+      {i:'🎵',t:'<b>サウンド種類</b>: アラーム音を選択します — Gentle Bell / Tibetan Bell / Harp Arpeggio / Guitar Harmonic / Aurora.'},
+      {i:'🌐',t:'<b>言語</b>: ドロップダウンから11言語を選択できます。'}
     ]},
-    {sec:'Viewer & Sound',items:[
-      {i:'🎨',t:'<b>Color</b>: Choose from 8 themes. (Lofi/Sunset/Forest/Galaxy/Yellow/Vivid/Rainbow/Dawn)'},
-      {i:'🔤',t:'<b>Text Size</b>: Adjust 1–5 steps with +/− buttons.'},
-      {i:'🎧',t:'<b>Background Sound</b>: Choose from Rain/Cafe/Fire/Wave/Wind. Plays independently of the timer.'},
-      {i:'🔇',t:'Use the <b>🔊 button</b> to mute/unmute background sound.'},
-      {i:'⛶',t:'<b>Fullscreen</b>: Enter fullscreen mode.'},
-      {i:'⊘',t:'<b>Hide Numbers</b>: Automatically hides numbers while the timer runs. They reappear on pause.'}
+    {sec:'ビューアー & サウンド',items:[
+      {i:'🎨',t:'<b>カラー</b>: 8つのテーマから選択 — Lofi / Sunset / Forest / Galaxy / Yellow / Vivid / Rainbow / Dawn.'},
+      {i:'🔤',t:'<b>文字サイズ</b>: +/−ボタンでタイマーのフォントサイズを1〜5段階で調整します。'},
+      {i:'🎧',t:'<b>背景サウンド</b>: 雨音 / カフェ / 焚き火 / 波 / 風から選択。タイマーに関係なく常に再生されます。'},
+      {i:'🔇',t:'ボリュームスライダー横の<b>🔊ボタン</b>で背景音をすぐにミュート/解除できます。'},
+      {i:'⛶',t:'<b>全画面</b>: 集中しやすい全画面モードに切り替えます。'},
+      {i:'⊘',t:'<b>数字を隠す</b>: タイマー実行中に数字を自動で非表示にします。一時停止すると再表示されます。'}
     ]},
-    {sec:'Shortcuts',items:[
-      {i:'⌨️',t:'<b>Space</b> — Start / Pause'},
-      {i:'⌨️',t:'<b>F</b> — Toggle fullscreen'},
-      {i:'⌨️',t:'<b>H</b> — Toggle hide numbers'},
-      {i:'⌨️',t:'<b>M</b> — Mute / Unmute background sound'}
+    {sec:'ショートカット',items:[
+      {i:'⌨️',t:'<b>Space</b> — スタート / 一時停止'},
+      {i:'⌨️',t:'<b>F</b> — 全画面 切替'},
+      {i:'⌨️',t:'<b>H</b> — 数字を隠す on/off'},
+      {i:'⌨️',t:'<b>M</b> — 背景音ミュート / 解除'}
     ]}
   ],
   zh:[
     {sec:'计时器',items:[
-      {i:'⏱',t:'通过 <b>专注 / 休息</b> 标签切换模式。'},
-      {i:'✏️',t:'开始前点击数字或使用 ▲▼ 按钮调整时间。MIN 输入60以上会自动换算为 HR/MIN。'},
+      {i:'⏱',t:'通过顶部的<b>专注 / 休息</b>标签切换模式。'},
+      {i:'✏️',t:'开始前点击计时器数字或使用▲▼按钮调整时间。MIN输入60以上会自动换算为HR/MIN。'},
       {i:'▶️',t:'点击<b>开始</b>，5秒倒计时后正式开始。'},
-      {i:'⏸',t:'运行时可使用<b>暂停</b>或<b>结束</b>控制计时。'}
+      {i:'⏸',t:'运行时可使用<b>暂停</b>临时停止，或<b>结束</b>终止当前会话。'}
     ]},
     {sec:'计时结束后',items:[
-      {i:'➕',t:'时间到后，超时计数器从 <b>00:01, 00:02...</b> 开始计时。超时时间也计入今日专注时长。'},
-      {i:'✅',t:'点击<b>继续</b>，关闭闹钟并继续超时专注。'},
-      {i:'🔚',t:'点击<b>结束</b>，进入下一个环节。'}
+      {i:'➕',t:'时间到后，超时计数器从<b>+00:01, +00:02...</b>开始计时。超时时间也计入今日专注时长。'},
+      {i:'✅',t:'点击<b>继续</b>，关闭闹钟并保持超时计数继续专注。'},
+      {i:'🔚',t:'点击<b>结束</b>，当前会话结束，进入下一个环节。'}
     ]},
     {sec:'任务',items:[
-      {i:'📝',t:'在输入框输入任务后点击 <b>Add</b> 或按 Enter 添加。（最多10个）'},
-      {i:'🎯',t:'点击任务项可选中。开始前选中任务，专注结束后该任务将自动标记为完成。'},
-      {i:'✎',t:'点击右侧 <b>✎ 编辑按钮</b>修改内容，✓ 或 Enter 保存。'},
-      {i:'⠿',t:'拖拽左侧 <b>⠿ 手柄</b>可调整顺序。'},
-      {i:'×',t:'点击 <b>×</b> 删除（需确认）。'}
+      {i:'📝',t:'在输入框输入任务后点击<b>Add</b>或按Enter添加。最多可添加10个任务。'},
+      {i:'🎯',t:'点击任务项可选中（高亮显示）。专注会话结束时，选中的任务将自动标记为完成。'},
+      {i:'✎',t:'点击<b>✎ 编辑按钮</b>修改内容，按✓或Enter保存。'},
+      {i:'⠿',t:'拖拽左侧<b>⠿ 手柄</b>可调整顺序。'},
+      {i:'×',t:'点击<b>×</b>，确认后删除任务。'},
+      {i:'○',t:'点击<b>圆形复选框</b>可手动切换完成/未完成状态。'}
     ]},
-    {sec:'闹钟设置',items:[
+    {sec:'设置',items:[
+      {i:'⏱',t:'<b>默认计时器</b>：设置专注/休息会话的默认时长。'},
       {i:'🔔',t:'<b>闹钟通知</b>：开关结束时的浏览器弹窗通知。'},
       {i:'🔊',t:'<b>闹钟声音</b>：开关结束时1分钟的闹钟音效。'},
-      {i:'🎵',t:'<b>声音类型</b>：可选 Gentle Bell / Tibetan Bell / Harp Arpeggio / Guitar Harmonic / Aurora。'}
+      {i:'🎵',t:'<b>声音类型</b>：选择闹钟声音 — Gentle Bell / Tibetan Bell / Harp Arpeggio / Guitar Harmonic / Aurora.'},
+      {i:'🌐',t:'<b>语言</b>：可从下拉菜单中选择11种语言。'}
     ]},
     {sec:'视图 & 声音',items:[
-      {i:'🎨',t:'<b>颜色</b>：从8种主题中选择。（Lofi/日落/森林/星系/黄色/鲜艳/彩虹/黎明）'},
-      {i:'🔤',t:'<b>字体大小</b>：用 +/− 调整1~5级。'},
-      {i:'🎧',t:'<b>背景音</b>：可选雨声/咖啡厅/篝火/海浪/风声。与计时器无关，始终播放。'},
-      {i:'🔇',t:'点击 <b>🔊 按钮</b>可静音/取消静音背景音。'},
-      {i:'⛶',t:'<b>全屏</b>：进入全屏模式。'},
+      {i:'🎨',t:'<b>颜色</b>：从8种主题中选择 — Lofi / 日落 / 森林 / 星系 / 黄色 / 鲜艳 / 彩虹 / 黎明.'},
+      {i:'🔤',t:'<b>字体大小</b>：用+/−按钮将计时器字体调整为1~5级。'},
+      {i:'🎧',t:'<b>背景音</b>：可选雨声 / 咖啡厅 / 篝火 / 海浪 / 风声。与计时器无关，始终播放。'},
+      {i:'🔇',t:'点击音量滑块旁的<b>🔊按钮</b>可立即静音/取消静音背景音。'},
+      {i:'⛶',t:'<b>全屏</b>：切换到全屏模式，打造专注环境。'},
       {i:'⊘',t:'<b>隐藏数字</b>：计时运行时自动隐藏数字，暂停时重新显示。'}
     ]},
     {sec:'快捷键',items:[
@@ -837,6 +888,300 @@ const HELP={
       {i:'⌨️',t:'<b>F</b> — 全屏切换'},
       {i:'⌨️',t:'<b>H</b> — 隐藏/显示数字'},
       {i:'⌨️',t:'<b>M</b> — 背景音静音 / 取消静音'}
+    ]}
+  ],
+  hi:[
+    {sec:'टाइमर',items:[
+      {i:'⏱',t:'ऊपर के <b>फ़ोकस / ब्रेक</b> टैब से मोड बदलें।'},
+      {i:'✏️',t:'शुरू करने से पहले टाइमर के नंबर पर क्लिक करें या ▲▼ बटन से समय बदलें। MIN में 60 से ज़्यादा डालने पर HR/MIN में बदल जाएगा।'},
+      {i:'▶️',t:'<b>शुरू</b> दबाएं — 5 सेकंड की उलटी गिनती के बाद सेशन शुरू होगा।'},
+      {i:'⏸',t:'चलते हुए <b>रोकें</b> से अस्थायी रोक, या <b>बंद करें</b> से सेशन समाप्त करें।'}
+    ]},
+    {sec:'सेशन समाप्त होने के बाद',items:[
+      {i:'➕',t:'समय पूरा होने पर ओवरटाइम काउंटर शुरू होता है: <b>+00:01, +00:02...</b> यह समय आज के फ़ोकस समय में जुड़ता है।'},
+      {i:'✅',t:'<b>जारी रखें</b> दबाएं — अलार्म बंद होगा और ओवरटाइम के साथ फ़ोकस जारी रह सकता है।'},
+      {i:'🔚',t:'<b>बंद करें</b> दबाएं — सेशन समाप्त होगा और अगला सेशन शुरू होगा।'}
+    ]},
+    {sec:'कार्य (Tasks)',items:[
+      {i:'📝',t:'इनपुट में कार्य लिखें और <b>Add</b> या Enter दबाएं। अधिकतम 10 कार्य जोड़े जा सकते हैं।'},
+      {i:'🎯',t:'कार्य पर क्लिक करने से वह चुना जाता है। फ़ोकस सेशन खत्म होने पर चुना हुआ कार्य स्वचालित रूप से पूर्ण हो जाता है।'},
+      {i:'✎',t:'<b>✎ संपादन बटन</b> से सामग्री बदलें, ✓ या Enter से सहेजें।'},
+      {i:'⠿',t:'बाईं ओर <b>⠿ हैंडल</b> खींचकर क्रम बदलें।'},
+      {i:'×',t:'<b>×</b> क्लिक करने पर पुष्टि के बाद कार्य हटाया जाएगा।'},
+      {i:'○',t:'<b>गोल चेकबॉक्स</b> से मैन्युअली पूर्ण/अपूर्ण बदलें।'}
+    ]},
+    {sec:'सेटिंग्स',items:[
+      {i:'⏱',t:'<b>डिफ़ॉल्ट टाइमर</b>: फ़ोकस/ब्रेक सेशन का डिफ़ॉल्ट समय सेट करें।'},
+      {i:'🔔',t:'<b>अलार्म सूचना</b>: सेशन खत्म होने पर ब्राउज़र नोटिफ़िकेशन on/off करें।'},
+      {i:'🔊',t:'<b>अलार्म ध्वनि</b>: सेशन खत्म होने पर 1 मिनट की अलार्म ध्वनि on/off करें।'},
+      {i:'🎵',t:'<b>ध्वनि प्रकार</b>: अलार्म ध्वनि चुनें — Gentle Bell / Tibetan Bell / Harp Arpeggio / Guitar Harmonic / Aurora.'},
+      {i:'🌐',t:'<b>भाषा</b>: ड्रॉपडाउन से 11 भाषाओं में से चुनें।'}
+    ]},
+    {sec:'व्यूअर & साउंड',items:[
+      {i:'🎨',t:'<b>रंग</b>: 8 थीम में से चुनें — Lofi / Sunset / Forest / Galaxy / Yellow / Vivid / Rainbow / Dawn.'},
+      {i:'🔤',t:'<b>फ़ॉन्ट आकार</b>: +/− बटन से टाइमर का आकार 1-5 चरणों में बदलें।'},
+      {i:'🎧',t:'<b>बैकग्राउंड साउंड</b>: बारिश / कैफ़े / अलाव / लहरें / हवा में से चुनें। टाइमर से स्वतंत्र, हमेशा चलता रहता है।'},
+      {i:'🔇',t:'वॉल्यूम स्लाइडर के पास <b>🔊 बटन</b> से तुरंत म्यूट/अनम्यूट करें।'},
+      {i:'⛶',t:'<b>पूर्ण स्क्रीन</b>: फ़ुलस्क्रीन मोड में जाएं।'},
+      {i:'⊘',t:'<b>नंबर छुपाएं</b>: टाइमर चलते समय नंबर छुप जाते हैं। रोकने पर वापस दिखते हैं।'}
+    ]},
+    {sec:'शॉर्टकट',items:[
+      {i:'⌨️',t:'<b>Space</b> — शुरू / रोकें'},
+      {i:'⌨️',t:'<b>F</b> — पूर्ण स्क्रीन on/off'},
+      {i:'⌨️',t:'<b>H</b> — नंबर छुपाएं on/off'},
+      {i:'⌨️',t:'<b>M</b> — बैकग्राउंड साउंड म्यूट / अनम्यूट'}
+    ]}
+  ],
+  es:[
+    {sec:'Temporizador',items:[
+      {i:'⏱',t:'Cambia el modo con las pestañas <b>Enfoque / Descanso</b> en la parte superior.'},
+      {i:'✏️',t:'Antes de iniciar, haz clic en los números o usa los botones ▲▼ para ajustar el tiempo. Introducir 60+ en MIN convierte automáticamente a HR/MIN.'},
+      {i:'▶️',t:'Pulsa <b>Iniciar</b> — comienza una cuenta regresiva de 5 segundos y luego empieza la sesión.'},
+      {i:'⏸',t:'Durante la sesión, usa <b>Pausar</b> para detenerte temporalmente o <b>Detener</b> para finalizarla.'}
+    ]},
+    {sec:'Después de la sesión',items:[
+      {i:'➕',t:'Al terminar el tiempo, comienza un contador de horas extra: <b>+00:01, +00:02...</b> Este tiempo extra se suma al tiempo de enfoque del día.'},
+      {i:'✅',t:'Pulsa <b>Continuar</b> para silenciar la alarma y seguir con el contador de tiempo extra.'},
+      {i:'🔚',t:'Pulsa <b>Detener</b> para terminar la sesión y pasar a la siguiente.'}
+    ]},
+    {sec:'Tareas',items:[
+      {i:'📝',t:'Escribe una tarea y pulsa <b>Add</b> o Enter para añadirla. Máximo 10 tareas.'},
+      {i:'🎯',t:'Haz clic en una tarea para seleccionarla (resaltada). Al terminar la sesión de enfoque, la tarea seleccionada se marca como completada automáticamente.'},
+      {i:'✎',t:'Haz clic en el <b>botón ✎</b> para editar. Guarda con ✓ o Enter.'},
+      {i:'⠿',t:'Arrastra el <b>⠿ handle</b> izquierdo para reordenar las tareas.'},
+      {i:'×',t:'Haz clic en <b>×</b> para eliminar (requiere confirmación).'},
+      {i:'○',t:'Haz clic en la <b>casilla circular</b> para marcar/desmarcar manualmente como completada.'}
+    ]},
+    {sec:'Ajustes',items:[
+      {i:'⏱',t:'<b>Temporizador</b>: Configura la duración predeterminada de las sesiones.'},
+      {i:'🔔',t:'<b>Notificación</b>: Activa/desactiva la notificación del navegador al terminar la sesión.'},
+      {i:'🔊',t:'<b>Sonido de alarma</b>: Activa/desactiva el sonido de 1 minuto al terminar la sesión.'},
+      {i:'🎵',t:'<b>Tipo de sonido</b>: Elige el sonido de alarma — Gentle Bell / Tibetan Bell / Harp Arpeggio / Guitar Harmonic / Aurora.'},
+      {i:'🌐',t:'<b>Idioma</b>: Elige entre 11 idiomas en el menú desplegable.'}
+    ]},
+    {sec:'Vista & Sonido',items:[
+      {i:'🎨',t:'<b>Color</b>: Elige entre 8 temas — Lofi / Sunset / Forest / Galaxy / Yellow / Vivid / Rainbow / Dawn.'},
+      {i:'🔤',t:'<b>Tamaño de texto</b>: Ajusta el tamaño de fuente del temporizador en 5 pasos con +/−.'},
+      {i:'🎧',t:'<b>Sonido de fondo</b>: Elige entre Lluvia / Café / Fuego / Olas / Viento. Se reproduce independientemente del temporizador.'},
+      {i:'🔇',t:'Haz clic en el <b>botón 🔊</b> junto al volumen para silenciar/activar el sonido de fondo.'},
+      {i:'⛶',t:'<b>Pantalla completa</b>: Activa el modo de pantalla completa.'},
+      {i:'⊘',t:'<b>Ocultar números</b>: Oculta el temporizador automáticamente mientras corre. Vuelve a aparecer al pausar.'}
+    ]},
+    {sec:'Atajos',items:[
+      {i:'⌨️',t:'<b>Space</b> — Iniciar / Pausar'},
+      {i:'⌨️',t:'<b>F</b> — Pantalla completa on/off'},
+      {i:'⌨️',t:'<b>H</b> — Ocultar números on/off'},
+      {i:'⌨️',t:'<b>M</b> — Silenciar / Activar sonido de fondo'}
+    ]}
+  ],
+  fr:[
+    {sec:'Minuteur',items:[
+      {i:'⏱',t:'Changez de mode avec les onglets <b>Concentration / Pause</b> en haut.'},
+      {i:'✏️',t:'Avant de démarrer, cliquez sur les chiffres ou utilisez les boutons ▲▼ pour régler le temps. Entrer 60+ dans MIN convertit automatiquement en HR/MIN.'},
+      {i:'▶️',t:'Appuyez sur <b>Démarrer</b> — un compte à rebours de 5 secondes commence, puis la session démarre.'},
+      {i:'⏸',t:'En cours, utilisez <b>Pause</b> pour vous arrêter temporairement ou <b>Arrêter</b> pour terminer.'}
+    ]},
+    {sec:'Après la session',items:[
+      {i:'➕',t:'Quand le temps est écoulé, un compteur de dépassement commence : <b>+00:01, +00:02...</b> Ce temps est ajouté au total du jour.'},
+      {i:'✅',t:'Appuyez sur <b>Continuer</b> pour couper l\'alarme et poursuivre avec le compteur de dépassement.'},
+      {i:'🔚',t:'Appuyez sur <b>Arrêter</b> pour terminer et passer à la session suivante.'}
+    ]},
+    {sec:'Tâches',items:[
+      {i:'📝',t:'Saisissez une tâche et appuyez sur <b>Add</b> ou Entrée. 10 tâches maximum.'},
+      {i:'🎯',t:'Cliquez sur une tâche pour la sélectionner (surlignée). À la fin de la session de concentration, la tâche sélectionnée est marquée comme terminée automatiquement.'},
+      {i:'✎',t:'Cliquez sur le <b>bouton ✎</b> pour modifier. Sauvegardez avec ✓ ou Entrée.'},
+      {i:'⠿',t:'Faites glisser le <b>⠿ handle</b> pour réordonner les tâches.'},
+      {i:'×',t:'Cliquez sur <b>×</b> pour supprimer (confirmation requise).'},
+      {i:'○',t:'Cliquez sur la <b>case ronde</b> pour marquer/démarquer manuellement comme terminée.'}
+    ]},
+    {sec:'Paramètres',items:[
+      {i:'⏱',t:'<b>Minuteur</b> : Définissez la durée par défaut des sessions.'},
+      {i:'🔔',t:'<b>Notification</b> : Activez/désactivez la notification du navigateur en fin de session.'},
+      {i:'🔊',t:'<b>Son d\'alarme</b> : Activez/désactivez le son d\'alarme d\'1 minute en fin de session.'},
+      {i:'🎵',t:'<b>Type de son</b> : Choisissez votre alarme — Gentle Bell / Tibetan Bell / Harp Arpeggio / Guitar Harmonic / Aurora.'},
+      {i:'🌐',t:'<b>Langue</b> : Choisissez parmi 11 langues dans le menu déroulant.'}
+    ]},
+    {sec:'Vue & Son',items:[
+      {i:'🎨',t:'<b>Couleur</b> : Choisissez parmi 8 thèmes — Lofi / Sunset / Forest / Galaxy / Yellow / Vivid / Rainbow / Dawn.'},
+      {i:'🔤',t:'<b>Taille du texte</b> : Ajustez la taille de police du minuteur en 5 niveaux avec +/−.'},
+      {i:'🎧',t:'<b>Son d\'ambiance</b> : Choisissez Pluie / Café / Feu / Vagues / Vent. Se joue indépendamment du minuteur.'},
+      {i:'🔇',t:'Cliquez sur le <b>bouton 🔊</b> pour couper/rétablir le son d\'ambiance instantanément.'},
+      {i:'⛶',t:'<b>Plein écran</b> : Passez en mode plein écran.'},
+      {i:'⊘',t:'<b>Cacher les chiffres</b> : Cache le minuteur automatiquement en cours de session. Réapparaît à la pause.'}
+    ]},
+    {sec:'Raccourcis',items:[
+      {i:'⌨️',t:'<b>Space</b> — Démarrer / Pause'},
+      {i:'⌨️',t:'<b>F</b> — Plein écran on/off'},
+      {i:'⌨️',t:'<b>H</b> — Cacher les chiffres on/off'},
+      {i:'⌨️',t:'<b>M</b> — Couper / Rétablir le son d\'ambiance'}
+    ]}
+  ],
+  pt:[
+    {sec:'Temporizador',items:[
+      {i:'⏱',t:'Mude o modo com as abas <b>Foco / Pausa</b> no topo.'},
+      {i:'✏️',t:'Antes de iniciar, clique nos números ou use os botões ▲▼ para ajustar o tempo. Inserir 60+ em MIN converte automaticamente para HR/MIN.'},
+      {i:'▶️',t:'Pressione <b>Iniciar</b> — uma contagem regressiva de 5 segundos começa e depois a sessão inicia.'},
+      {i:'⏸',t:'Durante a sessão, use <b>Pausar</b> para parar temporariamente ou <b>Parar</b> para encerrar.'}
+    ]},
+    {sec:'Após a sessão',items:[
+      {i:'➕',t:'Quando o tempo acaba, um contador de tempo extra começa: <b>+00:01, +00:02...</b> Este tempo é somado ao total do dia.'},
+      {i:'✅',t:'Pressione <b>Continuar</b> para silenciar o alarme e prosseguir com o contador de tempo extra.'},
+      {i:'🔚',t:'Pressione <b>Parar</b> para encerrar e ir para a próxima sessão.'}
+    ]},
+    {sec:'Tarefas',items:[
+      {i:'📝',t:'Digite uma tarefa e pressione <b>Add</b> ou Enter. Máximo de 10 tarefas.'},
+      {i:'🎯',t:'Clique em uma tarefa para selecioná-la (destacada). Ao terminar a sessão de foco, a tarefa selecionada é marcada como concluída automaticamente.'},
+      {i:'✎',t:'Clique no <b>botão ✎</b> para editar. Salve com ✓ ou Enter.'},
+      {i:'⠿',t:'Arraste o <b>⠿ handle</b> para reordenar as tarefas.'},
+      {i:'×',t:'Clique em <b>×</b> para excluir (confirmação necessária).'},
+      {i:'○',t:'Clique na <b>caixa circular</b> para marcar/desmarcar manualmente como concluída.'}
+    ]},
+    {sec:'Configurações',items:[
+      {i:'⏱',t:'<b>Temporizador</b>: Define a duração padrão das sessões.'},
+      {i:'🔔',t:'<b>Notificação</b>: Ativa/desativa a notificação do navegador ao fim da sessão.'},
+      {i:'🔊',t:'<b>Som de alarme</b>: Ativa/desativa o som de 1 minuto ao fim da sessão.'},
+      {i:'🎵',t:'<b>Tipo de som</b>: Escolha o alarme — Gentle Bell / Tibetan Bell / Harp Arpeggio / Guitar Harmonic / Aurora.'},
+      {i:'🌐',t:'<b>Idioma</b>: Escolha entre 11 idiomas no menu suspenso.'}
+    ]},
+    {sec:'Visualizador & Som',items:[
+      {i:'🎨',t:'<b>Cor</b>: Escolha entre 8 temas — Lofi / Sunset / Forest / Galaxy / Yellow / Vivid / Rainbow / Dawn.'},
+      {i:'🔤',t:'<b>Tamanho do texto</b>: Ajuste o tamanho da fonte do temporizador em 5 níveis com +/−.'},
+      {i:'🎧',t:'<b>Som de fundo</b>: Escolha Chuva / Café / Fogueira / Ondas / Vento. Toca independentemente do temporizador.'},
+      {i:'🔇',t:'Clique no <b>botão 🔊</b> para silenciar/ativar o som de fundo instantaneamente.'},
+      {i:'⛶',t:'<b>Tela cheia</b>: Entre no modo de tela cheia.'},
+      {i:'⊘',t:'<b>Ocultar números</b>: Oculta o temporizador automaticamente enquanto roda. Reaparecem ao pausar.'}
+    ]},
+    {sec:'Atalhos',items:[
+      {i:'⌨️',t:'<b>Space</b> — Iniciar / Pausar'},
+      {i:'⌨️',t:'<b>F</b> — Tela cheia on/off'},
+      {i:'⌨️',t:'<b>H</b> — Ocultar números on/off'},
+      {i:'⌨️',t:'<b>M</b> — Silenciar / Ativar som de fundo'}
+    ]}
+  ],
+  id:[
+    {sec:'Timer',items:[
+      {i:'⏱',t:'Ganti mode dengan tab <b>Fokus / Istirahat</b> di bagian atas.'},
+      {i:'✏️',t:'Sebelum mulai, klik angka timer atau gunakan tombol ▲▼ untuk mengatur waktu. Memasukkan 60+ di MIN otomatis dikonversi ke HR/MIN.'},
+      {i:'▶️',t:'Tekan <b>Mulai</b> — hitungan mundur 5 detik dimulai, lalu sesi dimulai.'},
+      {i:'⏸',t:'Saat berjalan, gunakan <b>Jeda</b> untuk berhenti sementara atau <b>Berhenti</b> untuk mengakhiri sesi.'}
+    ]},
+    {sec:'Setelah Sesi Berakhir',items:[
+      {i:'➕',t:'Saat waktu habis, penghitung waktu lebih mulai: <b>+00:01, +00:02...</b> Waktu ini ditambahkan ke total fokus hari ini.'},
+      {i:'✅',t:'Tekan <b>Lanjutkan</b> untuk mematikan alarm dan terus fokus dengan penghitung waktu lebih.'},
+      {i:'🔚',t:'Tekan <b>Berhenti</b> untuk mengakhiri dan lanjut ke sesi berikutnya.'}
+    ]},
+    {sec:'Tugas',items:[
+      {i:'📝',t:'Ketik tugas dan tekan <b>Add</b> atau Enter. Maksimal 10 tugas.'},
+      {i:'🎯',t:'Klik tugas untuk memilihnya (disorot). Saat sesi fokus berakhir, tugas yang dipilih otomatis ditandai selesai.'},
+      {i:'✎',t:'Klik <b>tombol ✎</b> untuk mengedit. Simpan dengan ✓ atau Enter.'},
+      {i:'⠿',t:'Seret <b>⠿ handle</b> di kiri untuk mengubah urutan.'},
+      {i:'×',t:'Klik <b>×</b> untuk menghapus (perlu konfirmasi).'},
+      {i:'○',t:'Klik <b>kotak lingkaran</b> untuk menandai/membatalkan selesai secara manual.'}
+    ]},
+    {sec:'Pengaturan',items:[
+      {i:'⏱',t:'<b>Timer Default</b>: Atur durasi default sesi fokus/istirahat.'},
+      {i:'🔔',t:'<b>Notifikasi Alarm</b>: Aktifkan/nonaktifkan notifikasi browser saat sesi berakhir.'},
+      {i:'🔊',t:'<b>Suara Alarm</b>: Aktifkan/nonaktifkan suara alarm 1 menit saat sesi berakhir.'},
+      {i:'🎵',t:'<b>Jenis Suara</b>: Pilih suara alarm — Gentle Bell / Tibetan Bell / Harp Arpeggio / Guitar Harmonic / Aurora.'},
+      {i:'🌐',t:'<b>Bahasa</b>: Pilih dari 11 bahasa di menu dropdown.'}
+    ]},
+    {sec:'Tampilan & Suara',items:[
+      {i:'🎨',t:'<b>Warna</b>: Pilih dari 8 tema — Lofi / Sunset / Forest / Galaxy / Yellow / Vivid / Rainbow / Dawn.'},
+      {i:'🔤',t:'<b>Ukuran Teks</b>: Sesuaikan ukuran font timer dalam 5 langkah dengan +/−.'},
+      {i:'🎧',t:'<b>Suara Latar</b>: Pilih Hujan / Kafe / Api / Ombak / Angin. Diputar terus tanpa bergantung pada timer.'},
+      {i:'🔇',t:'Klik <b>tombol 🔊</b> di samping slider volume untuk mute/unmute suara latar.'},
+      {i:'⛶',t:'<b>Layar Penuh</b>: Masuk ke mode layar penuh.'},
+      {i:'⊘',t:'<b>Sembunyikan Angka</b>: Otomatis menyembunyikan angka timer saat berjalan. Muncul kembali saat dijeda.'}
+    ]},
+    {sec:'Pintasan',items:[
+      {i:'⌨️',t:'<b>Space</b> — Mulai / Jeda'},
+      {i:'⌨️',t:'<b>F</b> — Layar penuh on/off'},
+      {i:'⌨️',t:'<b>H</b> — Sembunyikan angka on/off'},
+      {i:'⌨️',t:'<b>M</b> — Mute / Unmute suara latar'}
+    ]}
+  ],
+  de:[
+    {sec:'Timer',items:[
+      {i:'⏱',t:'Wechsle den Modus mit den <b>Fokus / Pause</b>-Tabs oben.'},
+      {i:'✏️',t:'Vor dem Start auf die Zahlen klicken oder ▲▼-Buttons nutzen. Bei 60+ in MIN wird automatisch in HR/MIN umgerechnet.'},
+      {i:'▶️',t:'<b>Start</b> drücken — nach einem 5-Sekunden-Countdown beginnt die Sitzung.'},
+      {i:'⏸',t:'Während der Sitzung <b>Pause</b> für eine kurze Unterbrechung oder <b>Stopp</b> zum Beenden.'}
+    ]},
+    {sec:'Nach der Sitzung',items:[
+      {i:'➕',t:'Nach Ablauf der Zeit startet ein Überzeitkounter: <b>+00:01, +00:02...</b> Diese Zeit wird zur heutigen Fokuszeit addiert.'},
+      {i:'✅',t:'<b>Weiter</b> drücken, um den Alarm zu stoppen und mit dem Überzeitkounter weiterzumachen.'},
+      {i:'🔚',t:'<b>Stopp</b> drücken, um die Sitzung zu beenden und zur nächsten zu wechseln.'}
+    ]},
+    {sec:'Aufgaben',items:[
+      {i:'📝',t:'Aufgabe eingeben und <b>Add</b> oder Enter drücken. Maximal 10 Aufgaben.'},
+      {i:'🎯',t:'Klick auf eine Aufgabe wählt sie aus (hervorgehoben). Am Ende der Fokus-Sitzung wird die gewählte Aufgabe automatisch als erledigt markiert.'},
+      {i:'✎',t:'<b>✎-Button</b> klicken zum Bearbeiten. Mit ✓ oder Enter speichern.'},
+      {i:'⠿',t:'Den <b>⠿ Handle</b> links ziehen, um die Reihenfolge zu ändern.'},
+      {i:'×',t:'<b>×</b> klicken zum Löschen (Bestätigung erforderlich).'},
+      {i:'○',t:'<b>Runde Checkbox</b> klicken, um manuell als erledigt/offen zu markieren.'}
+    ]},
+    {sec:'Einstellungen',items:[
+      {i:'⏱',t:'<b>Standard-Timer</b>: Standarddauer für Fokus-/Pausen-Sitzungen festlegen.'},
+      {i:'🔔',t:'<b>Benachrichtigung</b>: Browser-Benachrichtigung am Sitzungsende ein/ausschalten.'},
+      {i:'🔊',t:'<b>Alarmton</b>: 1-minütigen Alarmton am Sitzungsende ein/ausschalten.'},
+      {i:'🎵',t:'<b>Tontyp</b>: Alarmton wählen — Gentle Bell / Tibetan Bell / Harp Arpeggio / Guitar Harmonic / Aurora.'},
+      {i:'🌐',t:'<b>Sprache</b>: Aus 11 Sprachen im Dropdown wählen.'}
+    ]},
+    {sec:'Ansicht & Sound',items:[
+      {i:'🎨',t:'<b>Farbe</b>: Aus 8 Themes wählen — Lofi / Sunset / Forest / Galaxy / Yellow / Vivid / Rainbow / Dawn.'},
+      {i:'🔤',t:'<b>Schriftgröße</b>: Timer-Schriftgröße in 5 Stufen mit +/− anpassen.'},
+      {i:'🎧',t:'<b>Hintergrundklang</b>: Regen / Café / Feuer / Wellen / Wind wählen. Läuft unabhängig vom Timer.'},
+      {i:'🔇',t:'Den <b>🔊-Button</b> neben dem Lautstärkeregler klicken, um Hintergrundklang stumm zu schalten.'},
+      {i:'⛶',t:'<b>Vollbild</b>: In den Vollbildmodus wechseln.'},
+      {i:'⊘',t:'<b>Zahlen verbergen</b>: Versteckt den Timer automatisch während der Laufzeit. Erscheint bei Pause wieder.'}
+    ]},
+    {sec:'Shortcuts',items:[
+      {i:'⌨️',t:'<b>Space</b> — Start / Pause'},
+      {i:'⌨️',t:'<b>F</b> — Vollbild ein/aus'},
+      {i:'⌨️',t:'<b>H</b> — Zahlen verbergen ein/aus'},
+      {i:'⌨️',t:'<b>M</b> — Hintergrundklang stumm / an'}
+    ]}
+  ],
+  vi:[
+    {sec:'Hẹn giờ',items:[
+      {i:'⏱',t:'Chuyển đổi chế độ bằng tab <b>Tập trung / Nghỉ</b> ở trên cùng.'},
+      {i:'✏️',t:'Trước khi bắt đầu, nhấp vào số hoặc dùng nút ▲▼ để điều chỉnh thời gian. Nhập 60+ vào MIN sẽ tự động chuyển thành HR/MIN.'},
+      {i:'▶️',t:'Nhấn <b>Bắt đầu</b> — đếm ngược 5 giây rồi phiên bắt đầu.'},
+      {i:'⏸',t:'Trong khi chạy, dùng <b>Tạm dừng</b> để dừng tạm thời hoặc <b>Dừng</b> để kết thúc phiên.'}
+    ]},
+    {sec:'Sau khi phiên kết thúc',items:[
+      {i:'➕',t:'Khi hết giờ, bộ đếm thời gian thêm bắt đầu: <b>+00:01, +00:02...</b> Thời gian này được cộng vào tổng thời gian tập trung hôm nay.'},
+      {i:'✅',t:'Nhấn <b>Tiếp tục</b> để tắt báo thức và tiếp tục tập trung với bộ đếm thời gian thêm.'},
+      {i:'🔚',t:'Nhấn <b>Dừng</b> để kết thúc và chuyển sang phiên tiếp theo.'}
+    ]},
+    {sec:'Công việc',items:[
+      {i:'📝',t:'Nhập công việc và nhấn <b>Add</b> hoặc Enter. Tối đa 10 công việc.'},
+      {i:'🎯',t:'Nhấp vào công việc để chọn (được tô sáng). Khi phiên tập trung kết thúc, công việc đã chọn tự động được đánh dấu hoàn thành.'},
+      {i:'✎',t:'Nhấp vào <b>nút ✎</b> để chỉnh sửa. Lưu bằng ✓ hoặc Enter.'},
+      {i:'⠿',t:'Kéo <b>⠿ tay cầm</b> bên trái để sắp xếp lại thứ tự.'},
+      {i:'×',t:'Nhấp <b>×</b> để xóa (cần xác nhận).'},
+      {i:'○',t:'Nhấp <b>ô tròn</b> để đánh dấu hoàn thành/chưa hoàn thành thủ công.'}
+    ]},
+    {sec:'Cài đặt',items:[
+      {i:'⏱',t:'<b>Hẹn giờ mặc định</b>: Đặt thời gian mặc định cho phiên tập trung/nghỉ.'},
+      {i:'🔔',t:'<b>Thông báo báo thức</b>: Bật/tắt thông báo trình duyệt khi kết thúc phiên.'},
+      {i:'🔊',t:'<b>Âm báo thức</b>: Bật/tắt âm báo thức 1 phút khi kết thúc phiên.'},
+      {i:'🎵',t:'<b>Loại âm thanh</b>: Chọn âm báo — Gentle Bell / Tibetan Bell / Harp Arpeggio / Guitar Harmonic / Aurora.'},
+      {i:'🌐',t:'<b>Ngôn ngữ</b>: Chọn từ 11 ngôn ngữ trong menu thả xuống.'}
+    ]},
+    {sec:'Xem & Âm thanh',items:[
+      {i:'🎨',t:'<b>Màu sắc</b>: Chọn từ 8 chủ đề — Lofi / Sunset / Forest / Galaxy / Yellow / Vivid / Rainbow / Dawn.'},
+      {i:'🔤',t:'<b>Cỡ chữ</b>: Điều chỉnh cỡ chữ đồng hồ theo 5 bước bằng +/−.'},
+      {i:'🎧',t:'<b>Âm thanh nền</b>: Chọn Mưa / Cà phê / Lửa trại / Sóng / Gió. Phát liên tục không phụ thuộc vào đồng hồ.'},
+      {i:'🔇',t:'Nhấp <b>nút 🔊</b> cạnh thanh âm lượng để tắt/bật âm thanh nền ngay lập tức.'},
+      {i:'⛶',t:'<b>Toàn màn hình</b>: Chuyển sang chế độ toàn màn hình.'},
+      {i:'⊘',t:'<b>Ẩn số</b>: Tự động ẩn đồng hồ khi đang chạy. Hiện lại khi tạm dừng.'}
+    ]},
+    {sec:'Phím tắt',items:[
+      {i:'⌨️',t:'<b>Space</b> — Bắt đầu / Tạm dừng'},
+      {i:'⌨️',t:'<b>F</b> — Toàn màn hình on/off'},
+      {i:'⌨️',t:'<b>H</b> — Ẩn số on/off'},
+      {i:'⌨️',t:'<b>M</b> — Tắt / Bật âm thanh nền'}
     ]}
   ]
 };
